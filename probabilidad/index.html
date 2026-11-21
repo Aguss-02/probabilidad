@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de distribución normal | Probabilidad y Estadística</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <h1>Calculadora de distribución normal</h1>
+      <p class="subtitle">Probabilidad y Estadística · X ~ N(μ, σ²)</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card" id="calculator">
+      <!-- Tipo de cálculo -->
+      <div class="group-title">Probabilidad a partir de un valor</div>
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="left">P(X ≤ x)</button>
+        <button class="mode-btn" data-mode="right">P(X ≥ x)</button>
+        <button class="mode-btn" data-mode="between">P(x₁ ≤ X ≤ x₂)</button>
+        <button class="mode-btn" data-mode="tails">Dos colas</button>
+        <button class="mode-btn" data-mode="density">Densidad f(x)</button>
+      </div>
+
+      <div class="group-title">Valor a partir de una probabilidad (inversa)</div>
+      <div class="mode-row">
+        <button class="mode-btn" data-mode="invLeft">x dado P(X ≤ x)</button>
+        <button class="mode-btn" data-mode="invRight">x dado P(X ≥ x)</button>
+        <button class="mode-btn" data-mode="invTails">Valores de cola x₁, x₂</button>
+      </div>
+
+      <div class="group-title">Otros</div>
+      <div class="mode-row">
+        <button class="mode-btn" data-mode="zscore">Puntaje Z</button>
+      </div>
+
+      <!-- Parámetros -->
+      <div class="inputs">
+        <label class="field">
+          <span>Media (μ)</span>
+          <input type="number" id="mu" value="0" step="any">
+        </label>
+        <label class="field">
+          <span>Desviación estándar (σ)</span>
+          <input type="number" id="sigma" value="1" step="any" min="0">
+        </label>
+        <label class="field" data-show="x1">
+          <span id="x1Label">Valor (x)</span>
+          <input type="number" id="x1" value="1.96" step="any">
+        </label>
+        <label class="field" data-show="x2">
+          <span>Valor superior (x₂)</span>
+          <input type="number" id="x2" value="1.96" step="any">
+        </label>
+        <label class="field" data-show="p">
+          <span id="pLabel">Probabilidad (p)</span>
+          <input type="number" id="p" value="0.95" step="any" min="0" max="1">
+        </label>
+        <label class="field" data-show="pType">
+          <span>La probabilidad es</span>
+          <select id="pType">
+            <option value="center">Central (1 − α)</option>
+            <option value="tails">Total en las dos colas (α)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="quick">
+        <span class="quick-title">Rápido:</span>
+        <button class="chip" data-quick="std">Normal estándar (μ=0, σ=1)</button>
+        <button class="chip" data-quick="1">μ ± σ</button>
+        <button class="chip" data-quick="2">μ ± 2σ</button>
+        <button class="chip" data-quick="3">μ ± 3σ</button>
+      </div>
+
+      <details class="more">
+        <summary><span class="icon">⚙</span> Más opciones</summary>
+        <div class="more-body">
+          <label class="field inline">
+            <span>Decimales</span>
+            <select id="decimals">
+              <option>2</option><option>3</option><option>4</option>
+              <option>5</option><option selected>6</option><option>8</option><option>10</option>
+            </select>
+          </label>
+          <label class="field inline">
+            <span>Rango del gráfico (± σ)</span>
+            <select id="range">
+              <option value="3">± 3σ</option>
+              <option value="4" selected>± 4σ</option>
+              <option value="5">± 5σ</option>
+            </select>
+          </label>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button class="btn primary" id="calcBtn">Calcular</button>
+        <button class="btn" id="clearBtn">Limpiar</button>
+        <button class="btn" id="exampleBtn">Ejemplo</button>
+      </div>
+
+      <div class="error" id="error" hidden></div>
+
+      <!-- Resultado -->
+      <div class="result-card" id="resultCard" hidden>
+        <h2 class="section-title">Resultado</h2>
+        <div class="result-box">
+          <div class="result-main" id="resultMain"></div>
+          <div class="result-pct" id="resultPct"></div>
+          <div class="result-sub" id="resultSub"></div>
+        </div>
+
+        <div class="chart-box">
+          <svg id="chart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de la distribución normal"></svg>
+          <div class="chart-tools">
+            <button class="btn small" id="savePng">Guardar PNG</button>
+            <button class="btn small" id="saveSvg">Guardar SVG</button>
+            <button class="btn small" id="printBtn">Imprimir</button>
+            <label class="toggle"><input type="checkbox" id="showLabels" checked><span class="slider"></span> Etiquetas</label>
+            <label class="toggle"><input type="checkbox" id="showSigma"><span class="slider"></span> Marcas σ</label>
+            <label class="field inline">
+              <span>Tamaño de fuente</span>
+              <select id="fontScale">
+                <option value="1" selected>1×</option>
+                <option value="1.25">1.25×</option>
+                <option value="1.5">1.5×</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <p class="hint" id="dragHint">Tip: arrastrá los círculos azules sobre la curva para cambiar los valores.</p>
+
+        <p class="explanation" id="explanation"></p>
+
+        <h2 class="section-title">Medidas de la distribución</h2>
+        <table class="measures" id="measures"></table>
+
+        <details class="steps" open>
+          <summary><span class="icon">ƒ</span> Cálculo paso a paso</summary>
+          <ol id="steps"></ol>
+          <p class="note" id="stepsNote"></p>
+        </details>
+
+        <h2 class="section-title">Código R</h2>
+        <div class="code"><pre id="rCode"></pre><button class="copy" data-copy="rCode">Copiar</button></div>
+
+        <h2 class="section-title">Fórmulas de Excel (español)</h2>
+        <div class="code"><pre id="excelEs"></pre><button class="copy" data-copy="excelEs">Copiar</button></div>
+
+        <h2 class="section-title">Fórmulas de Excel (inglés)</h2>
+        <div class="code"><pre id="excelEn"></pre><button class="copy" data-copy="excelEn">Copiar</button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
+
+  <script src="js/normal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
