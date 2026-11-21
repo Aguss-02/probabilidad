@@ -289,3 +289,4 @@ ul.checks li::before { content: "✓"; position: absolute; left: 4px; color: #16
 .calc-tab small { line-height: 1.25; }
 
 .calc-tab-icon svg { display: block; }
+.math.math-lines { display: block; font-size: 1.05rem; line-height: 1.7; }
