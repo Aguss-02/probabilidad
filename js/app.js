@@ -60,7 +60,7 @@
     let outline = `M${X(-3)},${Y(-3)}`;
     for (let i = 0; i <= 40; i++) { const z = -3 + 6 * i / 40; outline += `L${X(z).toFixed(1)},${Y(z).toFixed(1)}`; }
     return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">` +
-      shade.map(([a, b]) => `<path d="${curve(a, b)}" fill="#7aa2ec"/>`).join('') +
+      shade.map(([a, b]) => `<path d="${curve(a, b)}" fill="#a78bfa"/>`).join('') +
       `<path d="${outline}" fill="none" stroke="#334155" stroke-width="1"/>` +
       `<line x1="0" y1="${H - 0.5}" x2="${W}" y2="${H - 0.5}" stroke="#94a3b8"/>` + line + '</svg>';
   }
@@ -336,7 +336,7 @@
     };
 
     let s = `<defs><linearGradient id="gShade" x1="0" y1="0" x2="0" y2="1">` +
-      `<stop offset="0" stop-color="#2563eb" stop-opacity="0.9"/><stop offset="1" stop-color="#93b4f5" stop-opacity="0.25"/></linearGradient></defs>`;
+      `<stop offset="0" stop-color="#8b5cf6" stop-opacity="0.9"/><stop offset="1" stop-color="#c4b5fd" stop-opacity="0.25"/></linearGradient></defs>`;
     s += `<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>`;
 
     // cuadrícula + eje
@@ -390,7 +390,7 @@
           color = '#374151';
         } else {
           ly = base - h * 0.42;
-          color = r.shaded ? '#1d4ed8' : '#374151';
+          color = r.shaded ? '#6d28d9' : '#374151';
         }
         s += `<text x="${X(lx)}" y="${ly}" text-anchor="middle" font-size="${15 * fs}" font-weight="700" fill="${color}" ` +
              `stroke="#ffffff" stroke-width="3.5" paint-order="stroke" ${font}>${pct(r.p)}</text>`;
@@ -404,10 +404,10 @@
       s += `<line x1="${cx}" y1="${base}" x2="${cx}" y2="${cy}" stroke="#4b5563" stroke-dasharray="4,3"/>`;
       if (m.point) s += `<text x="${cx}" y="${cy - 22 * fs}" text-anchor="middle" font-size="${13 * fs}" font-weight="700" fill="#0f172a" stroke="#fff" stroke-width="3" paint-order="stroke" ${font}>f = ${fmt(d.pdf(m.x), 4)}</text>`;
       const drag = m.field ? ` class="drag-handle" data-field="${m.field}"` : '';
-      s += `<circle cx="${cx}" cy="${cy}" r="${m.field ? 9 : 6}" fill="#ffffff" stroke="#dc2626" stroke-width="3"${drag}/>`;
+      s += `<circle cx="${cx}" cy="${cy}" r="${m.field ? 9 : 6}" fill="#ffffff" stroke="#2563eb" stroke-width="3"${drag}/>`;
       const label = fmt(m.x, Math.min(decimals(), 4));
       const bw = Math.max(34, label.length * 8.2 * fs + 16);
-      s += `<rect x="${cx - bw / 2}" y="${badgeY - 15 * fs}" width="${bw}" height="${21 * fs}" rx="${10 * fs}" fill="#dc2626"/>`;
+      s += `<rect x="${cx - bw / 2}" y="${badgeY - 15 * fs}" width="${bw}" height="${21 * fs}" rx="${10 * fs}" fill="#2563eb"/>`;
       s += `<text x="${cx}" y="${badgeY}" text-anchor="middle" font-size="${12.5 * fs}" font-weight="700" fill="#ffffff" ${font}>${label}</text>`;
     });
 

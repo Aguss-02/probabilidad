@@ -11,7 +11,7 @@ Abrí `index.html` en el navegador.
 **Otros:** puntaje Z.
 
 Incluye:
-- Gráfico interactivo (arrastrá los puntos rojos), etiquetas de %, marcas σ, exportar PNG/SVG e imprimir.
+- Gráfico interactivo (arrastrá los puntos azules), etiquetas de %, marcas σ, exportar PNG/SVG e imprimir.
 - Medidas de la distribución (media, mediana, moda, varianza, cuartiles, IQR…).
 - Cálculo paso a paso.
 - Código R y fórmulas de Excel (español e inglés).
