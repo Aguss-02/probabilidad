@@ -226,7 +226,7 @@ details.fold-card[open] > summary { margin-bottom: 10px; }
 @media print { .zt-wrap { max-height: none; overflow: visible; } .zt-controls { display: none; } }
 
 /* ---------- selector de calculadora ---------- */
-.calc-switch { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }
+.calc-switch { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
 .calc-tab { display: flex; align-items: center; gap: 12px; text-align: left; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .14); color: #fff; cursor: pointer; font: inherit; transition: background .15s, transform .15s; }
 .calc-tab:hover { background: rgba(255, 255, 255, .26); }
 .calc-tab b { display: block; font-size: 1rem; }
@@ -243,3 +243,47 @@ details.fold-card[open] > summary { margin-bottom: 10px; }
 .ci-levels tr.current td { background: var(--primary-soft); font-weight: 700; color: #5b21b6; }
 .ci-size-inputs { margin-top: 6px; margin-bottom: 10px; max-width: 320px; }
 @media print { .calc-switch, #ciTheory { display: none !important; } }
+
+/* ---------- discretas ---------- */
+.calc-tab { padding: 8px 10px; gap: 8px; }
+.calc-tab b { font-size: .92rem; }
+.calc-tab small { font-size: .74rem; }
+.calc-tab-icon { min-width: 32px; height: 32px; font-size: .9rem; letter-spacing: -1px; }
+.step-box { border: 1px solid #ece6fb; border-radius: 12px; padding: 14px 16px; margin-top: 16px; background: #fdfcff; }
+.step-head { display: flex; align-items: center; gap: 10px; font-weight: 800; color: #4c1d95; margin-bottom: 10px; }
+.step-num { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-2); color: #fff; font-size: .85rem; }
+.q-title { font-weight: 600; margin: 10px 0 8px; font-size: .95rem; }
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.choice { text-align: left; display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border: 1.5px solid #e5e0f5; border-radius: 10px; background: #fff; cursor: pointer; font: inherit; color: var(--text); transition: border-color .15s, box-shadow .15s; }
+.choice:hover { border-color: #a78bfa; }
+.choice b { color: #4c1d95; }
+.choice span { font-size: .88rem; }
+.choice em { font-size: .8rem; color: var(--muted); }
+.choice.active { border-color: var(--primary-2); background: var(--primary-soft); box-shadow: 0 0 0 3px rgba(139, 92, 246, .15); }
+.recommend { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: linear-gradient(135deg, #ede9fe, #f5f0ff); border: 1px solid #c4b5fd; font-size: .92rem; }
+.rec-name { font-size: 1.05rem; margin-bottom: 4px; color: #4c1d95; }
+.dist-formula { margin: 10px 0 0; font-family: "Cambria Math", "Times New Roman", serif; font-size: 1.05rem; color: #374151; }
+.example-text { margin-top: 12px; padding: 10px 14px; border-left: 3px solid #a78bfa; background: #faf7ff; border-radius: 0 8px 8px 0; font-size: .92rem; }
+ul.checks { list-style: none; padding-left: 0; }
+ul.checks li { padding-left: 26px; position: relative; margin-bottom: 6px; }
+ul.checks li::before { content: "✓"; position: absolute; left: 4px; color: #16a34a; font-weight: 800; }
+.dist-table td, .dist-table th { text-align: center; font-family: Consolas, "Courier New", monospace; }
+.dist-table td:last-child { font-style: normal; color: var(--text); }
+.dist-table tr.current td { background: var(--primary-soft); color: #5b21b6; font-weight: 700; }
+.dist-table thead th { position: sticky; top: 0; z-index: 1; }
+.dist-table caption { caption-side: bottom; padding: 6px; }
+
+/* ---------- regresión ---------- */
+.reg-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; margin-top: 14px; }
+.reg-side { display: flex; flex-direction: column; gap: 12px; }
+.field textarea { padding: 9px 10px; border: 1px solid var(--border); border-radius: 6px; font-family: Consolas, "Courier New", monospace; font-size: .95rem; resize: vertical; min-height: 180px; }
+.field textarea:focus { outline: 2px solid rgba(139, 92, 246, .35); border-color: var(--primary-2); }
+.reg-stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.stat-chip { display: inline-flex; flex-direction: column; padding: 6px 14px; border-radius: 10px; background: #fff; border: 1px solid #d9c8fb; min-width: 80px; }
+.stat-chip small { color: var(--muted); font-size: .75rem; }
+.stat-chip b { font-size: 1.15rem; color: #5b21b6; font-family: Consolas, "Courier New", monospace; }
+.explanation p { margin: 6px 0; }
+@media (max-width: 640px) { .reg-grid { grid-template-columns: 1fr; } }
+@media print { #discTheory, #unifTheory, #regTheory, .step-box .choice-grid { display: none !important; } }
+.calc-tab > span:last-child { min-width: 0; }
+.calc-tab small { line-height: 1.25; }

@@ -24,9 +24,14 @@ Incluye (en secciones desplegables):
 ```
 index.html
 css/styles.css
-js/normal.js   # funciones matemáticas (Φ, φ, Φ⁻¹)
-js/app.js      # calculadora de distribución normal
-js/ci.js       # intervalo de confianza y selector de calculadora
+js/normal.js      # funciones matemáticas de la normal (Φ, φ, Φ⁻¹)
+js/common.js      # funciones compartidas (formato, combinatoria, ejes)
+js/app.js         # calculadora de distribución normal
+js/ci.js          # intervalo de confianza
+js/discrete.js    # distribuciones discretas
+js/uniform.js     # distribución uniforme
+js/regression.js  # regresión lineal
+js/switcher.js    # selector de calculadora
 ```
 
 ## Intervalo de confianza para la media (σ conocida)
@@ -37,3 +42,21 @@ Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#interva
 - Resultado: intervalo x̄ ± z·σ/√n, margen de error, valor crítico z y error estándar.
 - Secciones desplegables: gráfico de la distribución muestral, resumen de valores, el mismo intervalo con otros niveles de confianza, tamaño de muestra necesario para un margen de error, cálculo paso a paso y fórmulas de Excel (`INTERVALO.CONFIANZA.NORM` / `CONFIDENCE.NORM`).
 - Si se usa la desviación muestral s con n < 30, avisa que conviene usar la t de Student.
+
+## Distribuciones discretas (`#discreta`)
+
+- Asistente de elección: dos preguntas sobre el problema recomiendan **binomial**, **Poisson** o **hipergeométrica**.
+- Justificación con las condiciones de la distribución elegida y aviso de aproximaciones (hipergeométrica ≈ binomial, binomial ≈ Poisson).
+- P(X = k), P(X ≤ k), P(X < k), P(X ≥ k), P(X > k) y P(a ≤ X ≤ b); E[X], Var(X), σ, moda.
+- Gráfico de barras, tabla de probabilidades, paso a paso y fórmulas de Excel.
+
+## Distribución uniforme (`#uniforme`)
+
+- Continua U(a, b) o discreta {a, …, b}.
+- Probabilidades, percentil (inversa), densidad, E[X], Var(X), σ, gráfico, paso a paso y Excel.
+
+## Regresión lineal (`#regresion`)
+
+- Datos pegados desde Excel (tabulación, punto y coma, espacio o coma; acepta coma decimal y encabezado).
+- Recta de mínimos cuadrados, r, R², interpretación, predicción con aviso de extrapolación.
+- Gráfico de dispersión con recta y residuos, tabla de residuos, sumas, paso a paso y Excel.

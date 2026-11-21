@@ -559,7 +559,7 @@
   function setMode(mode) {
     state.mode = mode;
     const cfg = MODES[mode];
-    document.querySelectorAll('.mode-btn').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
+    document.querySelectorAll('#calculator .mode-btn').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
     document.querySelectorAll('[data-show]').forEach((el) => { el.hidden = !cfg.fields.includes(el.dataset.show); });
     if (cfg.x1Label) $('x1Label').textContent = cfg.x1Label;
     if (cfg.pLabel) $('pLabel').textContent = cfg.pLabel;
@@ -713,7 +713,7 @@
 
   /* ------------------------------------------------------------- eventos */
   function init() {
-    document.querySelectorAll('.mode-btn').forEach((b) => {
+    document.querySelectorAll('#calculator .mode-btn').forEach((b) => {
       b.insertAdjacentHTML('afterbegin', modeIcon(b.dataset.mode));
       b.addEventListener('click', () => setMode(b.dataset.mode));
     });

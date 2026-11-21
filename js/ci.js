@@ -1,35 +1,11 @@
 /* =========================================================================
- *  Intervalo de confianza para la media (σ conocida) + selector de calculadora
+ *  Intervalo de confianza para la media (σ conocida)
  * ========================================================================= */
 (function () {
   'use strict';
 
   const { stdInv, stdPdf } = window.NormalDist;
   const $ = (id) => document.getElementById(id);
-
-  /* ------------------------------------------------- selector de calculadora */
-  const CALCS = {
-    normal: { hash: '#normal', subtitle: 'Distribución normal · X ~ N(μ, σ²)' },
-    ci: { hash: '#intervalo', subtitle: 'Intervalo de confianza para la media · x̄ ± z·σ/√n' },
-  };
-
-  function showCalc(name, updateHash = true) {
-    if (!CALCS[name]) name = 'normal';
-    document.querySelectorAll('[data-calc-tab]').forEach((b) => {
-      const on = b.dataset.calcTab === name;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-selected', on);
-    });
-    document.querySelectorAll('[data-calc]').forEach((el) => { el.hidden = el.dataset.calc !== name; });
-    $('calcSubtitle').textContent = CALCS[name].subtitle;
-    try { localStorage.setItem('calc-activa', name); } catch (_) { /* sin almacenamiento */ }
-    if (updateHash && location.hash !== CALCS[name].hash) history.replaceState(null, '', CALCS[name].hash);
-    if (name === 'ci') ciRun();
-  }
-
-  function calcFromHash() {
-    return Object.keys(CALCS).find((k) => CALCS[k].hash === location.hash);
-  }
 
   /* -------------------------------------------------------------- formatos */
   const decimals = () => parseInt($('ciDecimals').value, 10);
@@ -231,8 +207,7 @@
   }
 
   function init() {
-    document.querySelectorAll('[data-calc-tab]').forEach((b) => b.addEventListener('click', () => showCalc(b.dataset.calcTab)));
-    window.addEventListener('hashchange', () => { const c = calcFromHash(); if (c) showCalc(c, false); });
+    document.addEventListener('calc:show', (e) => { if (e.detail === 'ci') ciRun(); });
 
     ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => {
       $(id).addEventListener('input', () => ciRun());
@@ -254,10 +229,6 @@
     const folds = () => $('ciResult').querySelectorAll('details.fold');
     $('ciExpandAll').addEventListener('click', () => folds().forEach((f) => { f.open = true; }));
     $('ciCollapseAll').addEventListener('click', () => folds().forEach((f) => { f.open = false; }));
-
-    let start = calcFromHash();
-    if (!start) { try { start = localStorage.getItem('calc-activa'); } catch (_) { /* nada */ } }
-    showCalc(start || 'normal', !!calcFromHash());
   }
 
   document.addEventListener('DOMContentLoaded', init);
