@@ -11,6 +11,11 @@
     <div class="wrap">
       <h1>Calculadora de distribución normal</h1>
       <p class="subtitle">Probabilidad y Estadística · X ~ N(μ, σ²)</p>
+      <nav class="top-nav">
+        <a href="#calculator">Calculadora</a>
+        <a href="#converter">Conversor rápido</a>
+        <a href="#theory">Teoría</a>
+      </nav>
     </div>
   </header>
 
@@ -115,6 +120,17 @@
           <div class="result-sub" id="resultSub"></div>
         </div>
 
+        <p class="explanation" id="explanation"></p>
+
+        <div class="fold-bar">
+          <span class="muted small">Más detalles</span>
+          <button class="link-btn" id="expandAll">Abrir todo</button>
+          <button class="link-btn" id="collapseAll">Cerrar todo</button>
+        </div>
+
+        <details class="fold" data-fold="chart">
+          <summary><span class="fold-icon">📈</span> Gráfico interactivo</summary>
+          <div class="fold-body">
         <div class="chart-box">
           <svg id="chart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de la distribución normal"></svg>
           <div class="chart-tools">
@@ -133,29 +149,150 @@
             </label>
           </div>
         </div>
-        <p class="hint" id="dragHint">Tip: arrastrá los círculos azules sobre la curva para cambiar los valores.</p>
-
-        <p class="explanation" id="explanation"></p>
-
-        <h2 class="section-title">Medidas de la distribución</h2>
-        <table class="measures" id="measures"></table>
-
-        <details class="steps" open>
-          <summary><span class="icon">ƒ</span> Cálculo paso a paso</summary>
-          <ol id="steps"></ol>
-          <p class="note" id="stepsNote"></p>
+        <p class="hint" id="dragHint">Tip: pasá el mouse sobre el gráfico para leer x, f(x) y P(X ≤ x); arrastrá los círculos azules para cambiar los valores.</p>
+          </div>
         </details>
 
-        <h2 class="section-title">Código R</h2>
-        <div class="code"><pre id="rCode"></pre><button class="copy" data-copy="rCode">Copiar</button></div>
+        <details class="fold" data-fold="related">
+          <summary><span class="fold-icon">≈</span> Probabilidades relacionadas</summary>
+          <div class="fold-body">
+            <p class="muted small">Otras probabilidades útiles para los mismos valores, sin tener que recalcular.</p>
+            <div class="related" id="related"></div>
+          </div>
+        </details>
 
-        <h2 class="section-title">Fórmulas de Excel (español)</h2>
-        <div class="code"><pre id="excelEs"></pre><button class="copy" data-copy="excelEs">Copiar</button></div>
+        <details class="fold" data-fold="measures">
+          <summary><span class="fold-icon">σ</span> Medidas de la distribución</summary>
+          <div class="fold-body">
+            <table class="measures" id="measures"></table>
+          </div>
+        </details>
 
-        <h2 class="section-title">Fórmulas de Excel (inglés)</h2>
-        <div class="code"><pre id="excelEn"></pre><button class="copy" data-copy="excelEn">Copiar</button></div>
+        <details class="fold" data-fold="steps">
+          <summary><span class="fold-icon"><i>ƒ</i></span> Cálculo paso a paso</summary>
+          <div class="fold-body">
+            <ol id="steps"></ol>
+            <p class="note" id="stepsNote"></p>
+          </div>
+        </details>
+
+        <details class="fold" data-fold="code">
+          <summary><span class="fold-icon">&lt;/&gt;</span> Código R y fórmulas de Excel</summary>
+          <div class="fold-body">
+            <h3 class="code-title">R</h3>
+            <div class="code"><pre id="rCode"></pre><button class="copy" data-copy="rCode">Copiar</button></div>
+            <h3 class="code-title">Excel (español)</h3>
+            <div class="code"><pre id="excelEs"></pre><button class="copy" data-copy="excelEs">Copiar</button></div>
+            <h3 class="code-title">Excel (inglés)</h3>
+            <div class="code"><pre id="excelEn"></pre><button class="copy" data-copy="excelEn">Copiar</button></div>
+          </div>
+        </details>
       </div>
     </section>
+
+    <!-- Conversor rápido -->
+    <section class="card" id="converter">
+      <h2 class="card-title">Conversor rápido: valor ⇄ probabilidad</h2>
+      <p class="muted">Escribí en <b>cualquiera</b> de los dos casilleros y el otro se completa al instante. Ideal para reemplazar la tabla normal del final del libro.</p>
+
+      <div class="conv-grid">
+        <div class="conv-form">
+          <label class="field">
+            <span>Variable</span>
+            <select id="cvVar">
+              <option value="z">Puntaje z (normal estándar)</option>
+              <option value="x">Puntaje bruto x (cualquier normal)</option>
+            </select>
+          </label>
+          <div class="conv-params" id="cvParams" hidden>
+            <label class="field"><span>Media (μ)</span><input type="number" id="cvMu" value="100" step="any"></label>
+            <label class="field"><span>Desv. estándar (σ)</span><input type="number" id="cvSigma" value="15" step="any"></label>
+          </div>
+          <label class="field">
+            <span>Probabilidad</span>
+            <select id="cvType"></select>
+          </label>
+          <div class="conv-pair">
+            <label class="field"><span id="cvValLabel">Puntaje z</span><input type="number" id="cvVal" value="1.96" step="any"></label>
+            <span class="conv-arrow" aria-hidden="true">⇄</span>
+            <label class="field"><span id="cvProbLabel">Probabilidad</span><input type="number" id="cvProb" step="any" min="0" max="1"></label>
+          </div>
+          <div class="error" id="cvError" hidden></div>
+          <button class="btn small" id="cvSend">Abrir en la calculadora completa ↑</button>
+        </div>
+        <details class="fold conv-fold" data-fold="cvChart">
+          <summary><span class="fold-icon">📈</span> Ver gráfico</summary>
+          <div class="fold-body">
+            <svg id="cvChart" class="conv-chart" viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" aria-label="Área sombreada"></svg>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Teoría -->
+    <details class="card theory fold-card" id="theory" data-fold="theory">
+      <summary><h2 class="card-title">Teoría y ayuda: sobre esta calculadora</h2></summary>
+      <p>Calculadora online y gratuita de la <b>distribución normal</b> (también llamada gaussiana o campana de Gauss). Calcula probabilidades, valores a partir de una probabilidad (normal inversa), la densidad y el puntaje z para cualquier normal N(μ, σ²). Además muestra un gráfico interactivo, el desarrollo paso a paso y el código equivalente en R y Excel.</p>
+
+      <h3>¿Qué se puede calcular?</h3>
+      <div class="table-wrap">
+        <table class="calc-table">
+          <thead><tr><th>Opción</th><th>Qué responde</th><th>Ejemplo de pregunta</th></tr></thead>
+          <tbody>
+            <tr><td><b>P(X ≤ x)</b></td><td>Probabilidad acumulada hasta x (función de distribución).</td><td>¿Qué proporción mide menos de 1,70 m?</td></tr>
+            <tr><td><b>P(X ≥ x)</b></td><td>Probabilidad de la cola superior (1 − acumulada).</td><td>¿Qué proporción supera los 90 puntos?</td></tr>
+            <tr><td><b>P(x₁ ≤ X ≤ x₂)</b></td><td>Probabilidad de que X esté entre dos valores.</td><td>¿Qué porcentaje pesa entre 60 y 75 kg?</td></tr>
+            <tr><td><b>Dos colas</b></td><td>Probabilidad de quedar fuera del intervalo [x₁, x₂].</td><td>¿Cuántas piezas quedan fuera de tolerancia?</td></tr>
+            <tr><td><b>Densidad f(x)</b></td><td>Altura de la curva en x (no es una probabilidad).</td><td>¿Cuánto vale la función de densidad en x = 12?</td></tr>
+            <tr><td><b>x dado P(X ≤ x)</b></td><td>Valor para una probabilidad acumulada (cuantil, percentil).</td><td>¿Qué nota deja al 90 % por debajo?</td></tr>
+            <tr><td><b>x dado P(X ≥ x)</b></td><td>Valor para una probabilidad de cola superior.</td><td>¿Desde qué puntaje está el 5 % superior?</td></tr>
+            <tr><td><b>Valores de cola x₁, x₂</b></td><td>Los dos límites simétricos para una probabilidad central o de colas.</td><td>¿Entre qué valores está el 95 % central?</td></tr>
+            <tr><td><b>Puntaje Z</b></td><td>Cuántas desviaciones estándar está x de la media.</td><td>¿Qué tan inusual es medir 2,05 m?</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Cómo usarla</h3>
+      <ol class="howto">
+        <li><span>1</span>Cargá la media (μ) y la desviación estándar (σ). Si no las conocés o querés trabajar con la normal estándar, tocá <b>Normal estándar</b> (μ = 0, σ = 1).</li>
+        <li><span>2</span>Elegí qué querés calcular: los íconos muestran qué zona de la curva se va a sombrear.</li>
+        <li><span>3</span>Ingresá el valor o la probabilidad. El resultado se actualiza mientras escribís (o presioná <b>Calcular</b>).</li>
+        <li><span>4</span>Explorá el gráfico: pasá el mouse para leer x, f(x) y P(X ≤ x) en cualquier punto, y arrastrá los círculos para mover los límites.</li>
+      </ol>
+
+      <h3>Fórmulas</h3>
+      <div class="formulas">
+        <div class="formula">
+          <div class="formula-name">Función de densidad</div>
+          <div class="math">f(x) = <span class="frac"><span>1</span><span>σ√(2π)</span></span> · e<sup>−(x − μ)² / (2σ²)</sup></div>
+        </div>
+        <div class="formula">
+          <div class="formula-name">Estandarización (puntaje z)</div>
+          <div class="math">z = <span class="frac"><span>x − μ</span><span>σ</span></span></div>
+        </div>
+        <div class="formula">
+          <div class="formula-name">Desestandarización</div>
+          <div class="math">x = μ + z · σ</div>
+        </div>
+      </div>
+
+      <h3>¿Qué es la distribución normal?</h3>
+      <p>Es la distribución continua más usada en estadística. Muchas variables reales se parecen a ella, como la altura, el peso, los errores de medición o las notas de un examen masivo. Su gráfico tiene forma de <b>campana simétrica</b>: la mayoría de los datos se agrupa cerca de la media y la frecuencia baja a medida que nos alejamos del centro. Queda completamente determinada por dos parámetros: la media μ, que indica dónde está el centro, y la desviación estándar σ, que indica qué tan ancha es la campana.</p>
+
+      <h3>Regla empírica (68 – 95 – 99,7)</h3>
+      <div class="empirical">
+        <div class="emp-item"><div class="emp-pct">68,27 %</div><div>entre μ − σ y μ + σ</div></div>
+        <div class="emp-item"><div class="emp-pct">95,45 %</div><div>entre μ − 2σ y μ + 2σ</div></div>
+        <div class="emp-item"><div class="emp-pct">99,73 %</div><div>entre μ − 3σ y μ + 3σ</div></div>
+      </div>
+      <p class="muted small">Probalo con los botones rápidos <b>μ ± σ</b>, <b>μ ± 2σ</b> y <b>μ ± 3σ</b> de la calculadora.</p>
+
+      <h3>Teorema Central del Límite</h3>
+      <p>La suma o el promedio de muchas variables aleatorias independientes tiende a tener una distribución normal, <i>aunque las variables originales no sean normales</i>. Cuanto más grande es la muestra, mejor es la aproximación. Por eso la normal aparece en intervalos de confianza y pruebas de hipótesis.</p>
+
+      <h3>La normal estándar</h3>
+      <p>Es el caso particular con μ = 0 y σ = 1, y se la suele llamar Z. Si X ~ N(μ, σ²), el valor estandarizado z = (x − μ)/σ sigue una normal estándar. Así, cualquier probabilidad se calcula con una única tabla: P(X ≤ x) = Φ(z). La calculadora hace exactamente eso y lo muestra en el <b>cálculo paso a paso</b>.</p>
+    </details>
   </main>
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>

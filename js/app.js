@@ -273,6 +273,8 @@
       }
     }
 
+    R.related = relatedProbs(d, R, inp);
+
     const q1 = d.inv(0.25), q3 = d.inv(0.75);
     R.measures = [
       ['Media', fmt(d.mean)], ['Mediana', fmt(d.median)], ['Moda', fmt(d.mode)],
@@ -282,6 +284,48 @@
     ];
     R.note = `La distribución normal es simétrica: mediana = moda = media = ${fmt(mu)}.`;
     return R;
+  }
+
+  /* ------------------------------------------- probabilidades relacionadas */
+  function relatedProbs(d, R, inp) {
+    const xs = R.markers.map((m) => m.x);
+    const mu = d.mu;
+    const items = [];
+    const currentKey = {
+      left: 'le1', right: 'ge1', between: 'btw', tails: 'out', invLeft: 'le1', invRight: 'ge1',
+      invTails: inp.pType === 'center' ? 'btw' : 'out', zscore: 'le1', density: '',
+    }[state.mode];
+
+    if (xs.length === 1) {
+      const x = xs[0], dist = Math.abs(x - mu), a = mu - dist, b = mu + dist;
+      items.push({ key: 'le1', icon: 'left', label: `P(X ≤ ${fmt(x)})`, p: d.cdf(x) });
+      items.push({ key: 'ge1', icon: 'right', label: `P(X ≥ ${fmt(x)})`, p: d.sf(x) });
+      if (dist > 0) {
+        items.push({ key: 'sym', icon: 'between', label: `P(${fmt(a)} ≤ X ≤ ${fmt(b)})`, p: d.between(a, b) });
+        items.push({ key: 'symOut', icon: 'tails', label: `P(X ≤ ${fmt(a)}) + P(X ≥ ${fmt(b)})`, p: d.cdf(a) + d.sf(b) });
+      }
+      items.push({ key: 'leMu', icon: 'between', label: `P(${fmt(Math.min(mu, x))} ≤ X ≤ ${fmt(Math.max(mu, x))})`, p: d.between(Math.min(mu, x), Math.max(mu, x)), note: 'entre la media y x' });
+    } else {
+      const [x1, x2] = xs;
+      items.push({ key: 'le1', icon: 'left', label: `P(X ≤ ${fmt(x1)})`, p: d.cdf(x1) });
+      items.push({ key: 'ge1', icon: 'right', label: `P(X ≥ ${fmt(x1)})`, p: d.sf(x1) });
+      items.push({ key: 'le2', icon: 'left', label: `P(X ≤ ${fmt(x2)})`, p: d.cdf(x2) });
+      items.push({ key: 'ge2', icon: 'right', label: `P(X ≥ ${fmt(x2)})`, p: d.sf(x2) });
+      items.push({ key: 'btw', icon: 'between', label: `P(${fmt(x1)} ≤ X ≤ ${fmt(x2)})`, p: d.between(x1, x2) });
+      items.push({ key: 'out', icon: 'tails', label: `P(X ≤ ${fmt(x1)}) + P(X ≥ ${fmt(x2)})`, p: d.cdf(x1) + d.sf(x2) });
+    }
+    items.forEach((it) => { it.current = it.key === currentKey; });
+    return items;
+  }
+
+  function renderRelated(items) {
+    $('related').innerHTML = items.map((it) =>
+      `<div class="rel-item${it.current ? ' current' : ''}" title="${it.current ? 'Es el resultado calculado arriba' : ''}">` +
+      modeIcon(it.icon) +
+      `<span class="rel-label">${it.label}${it.note ? `<br><span class="muted small">${it.note}</span>` : ''}</span>` +
+      `<span><div class="rel-value">${fmt(it.p)}</div><div class="rel-pct">${pct(it.p)}</div></span>` +
+      `<div class="rel-bar"><i style="width:${(Math.min(Math.max(it.p, 0), 1) * 100).toFixed(2)}%"></i></div></div>`
+    ).join('');
   }
 
   /* ---------------------------------------------------------------- gráfico */
@@ -411,10 +455,14 @@
       s += `<text x="${cx}" y="${badgeY}" text-anchor="middle" font-size="${12.5 * fs}" font-weight="700" fill="#ffffff" ${font}>${label}</text>`;
     });
 
+    // elementos de hover (se actualizan sin redibujar)
+    s += `<g id="hoverG" style="display:none" pointer-events="none"><line id="hoverLine" y1="${T - 14}" y2="${base}" stroke="#7c3aed" stroke-width="1" stroke-dasharray="3,3"/>` +
+         `<circle id="hoverDot" r="4.5" fill="#7c3aed" stroke="#fff" stroke-width="2"/></g>`;
+
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     svg.dataset.w = W; svg.dataset.h = H;
     svg.innerHTML = s;
-    state.chart = { lo, hi, L, plotW };
+    state.chart = { lo, hi, L, plotW, X, Y, d, base };
   }
 
   /* ------------------------------------------------------------ arrastrar */
@@ -427,12 +475,46 @@
       svg.setPointerCapture(e.pointerId);
       e.preventDefault();
     });
+    const tip = document.createElement('div');
+    tip.className = 'tooltip';
+    tip.hidden = true;
+    svg.parentNode.appendChild(tip);
+    const hideHover = () => {
+      tip.hidden = true;
+      const g = document.getElementById('hoverG');
+      if (g) g.style.display = 'none';
+    };
+    svg.addEventListener('pointerleave', hideHover);
+
     svg.addEventListener('pointermove', (e) => {
-      if (!state.drag) return;
       const pt = svg.createSVGPoint();
       pt.x = e.clientX; pt.y = e.clientY;
       const p = pt.matrixTransform(svg.getScreenCTM().inverse());
-      const { lo, hi, L, plotW } = state.chart;
+      const { lo, hi, L, plotW, X, Y, d } = state.chart;
+
+      if (!state.drag) {
+        // tooltip: x, f(x) y P(X ≤ x) bajo el cursor
+        const xh = lo + (p.x - L) / plotW * (hi - lo);
+        if (xh < lo || xh > hi || e.target.dataset.field) { hideHover(); return; }
+        const cx = X(xh), cy = Y(d.pdf(xh));
+        const g = document.getElementById('hoverG');
+        g.style.display = '';
+        document.getElementById('hoverLine').setAttribute('x1', cx);
+        document.getElementById('hoverLine').setAttribute('x2', cx);
+        document.getElementById('hoverDot').setAttribute('cx', cx);
+        document.getElementById('hoverDot').setAttribute('cy', cy);
+        const sp = svg.createSVGPoint();
+        sp.x = cx; sp.y = cy;
+        const scr = sp.matrixTransform(svg.getScreenCTM());
+        const box = svg.parentNode.getBoundingClientRect();
+        tip.innerHTML = `<b>x</b> = ${fmt(xh, 3)}<br><b>f(x)</b> = ${fmt(d.pdf(xh), 4)}<br><b>P(X ≤ x)</b> = ${fmt(d.cdf(xh), 4)}`;
+        tip.hidden = false;
+        const left = Math.min(Math.max(scr.x - box.left, 70), box.width - 70);
+        tip.style.left = left + 'px';
+        tip.style.top = Math.max(scr.y - box.top - 8, 62) + 'px';
+        return;
+      }
+      hideHover();
       let x = lo + (p.x - L) / plotW * (hi - lo);
       x = Math.min(Math.max(x, lo), hi);
       const sigma = readNumber('sigma');
@@ -466,6 +548,7 @@
     $('excelEs').textContent = R.excelEs;
     $('excelEn').textContent = R.excelEn;
     $('dragHint').hidden = !R.markers.some((m) => m.field);
+    renderRelated(R.related);
     drawChart(R);
   }
 
@@ -529,6 +612,154 @@
     img.src = url;
   }
 
+  /* ------------------------------------------------------ conversor rápido */
+  const CV_TYPES = {
+    z: [
+      ['le', 'P(Z ≤ z)'], ['ge', 'P(Z ≥ z)'], ['central', 'P(−z ≤ Z ≤ z)  · central'], ['tails', 'P(Z ≤ −z) + P(Z ≥ z)  · dos colas'],
+    ],
+    x: [
+      ['le', 'P(X ≤ x)'], ['ge', 'P(X ≥ x)'], ['central', 'P(μ − d ≤ X ≤ μ + d)  · central, d = |x − μ|'], ['tails', 'Fuera de μ ± d  · dos colas, d = |x − μ|'],
+    ],
+  };
+  const cv = { source: 'val' }; // qué casillero escribió el usuario por última vez
+
+  function cvParams() {
+    if ($('cvVar').value === 'z') return { mu: 0, sigma: 1 };
+    return { mu: readNumber('cvMu'), sigma: readNumber('cvSigma') };
+  }
+
+  function cvFillTypes() {
+    const v = $('cvVar').value, prev = $('cvType').value;
+    $('cvType').innerHTML = CV_TYPES[v].map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
+    if (prev) $('cvType').value = prev;
+    $('cvParams').hidden = v === 'z';
+    $('cvValLabel').textContent = v === 'z' ? 'Puntaje z' : 'Puntaje bruto (x)';
+  }
+
+  function cvProbLabel(type, v) {
+    const s = v === 'z' ? 'Z' : 'X', t = v === 'z' ? 'z' : 'x';
+    return { le: `P(${s} ≤ ${t})`, ge: `P(${s} ≥ ${t})`, central: 'Prob. central', tails: 'Prob. en las colas' }[type];
+  }
+
+  function cvUpdate() {
+    const v = $('cvVar').value, type = $('cvType').value;
+    const { mu, sigma } = cvParams();
+    const err = $('cvError');
+    $('cvProbLabel').textContent = cvProbLabel(type, v);
+    const fail = (m) => { err.textContent = m; err.hidden = false; };
+    err.hidden = true;
+    if (!Number.isFinite(mu) || !(sigma > 0)) return fail('Revisá la media y la desviación estándar (σ > 0).');
+    const d = Normal(mu, sigma);
+    let x, p;
+    if (cv.source === 'val') {
+      x = readNumber('cvVal');
+      if (!Number.isFinite(x)) { $('cvProb').value = ''; return cvChart(null); }
+      const dist = Math.abs(x - mu);
+      p = { le: d.cdf(x), ge: d.sf(x), central: d.between(mu - dist, mu + dist), tails: d.cdf(mu - dist) + d.sf(mu + dist) }[type];
+      $('cvProb').value = +p.toPrecision(10);
+    } else {
+      p = readNumber('cvProb');
+      if (!(p > 0 && p < 1)) { $('cvVal').value = ''; cvChart(null); return fail('La probabilidad debe estar entre 0 y 1.'); }
+      x = {
+        le: d.inv(p), ge: d.invUpper(p),
+        central: mu + sigma * stdInv((1 + p) / 2), tails: mu + sigma * stdInv(1 - p / 2),
+      }[type];
+      $('cvVal').value = +x.toPrecision(10);
+    }
+    $('cvVal').classList.toggle('filled', cv.source === 'prob');
+    $('cvProb').classList.toggle('filled', cv.source === 'val');
+    cvChart({ z: (x - mu) / sigma, type, p });
+  }
+
+  function cvChart(info) {
+    const W = 320, H = 170, L = 10, Rr = 10, base = 140, top = 26;
+    const lo = -4, hi = 4;
+    const X = (z) => L + (z - lo) / (hi - lo) * (W - L - Rr);
+    const Y = (y) => base - y / 0.4 * (base - top);
+    const pdf = window.NormalDist.stdPdf;
+    const area = (a, b) => {
+      a = Math.max(a, lo); b = Math.min(b, hi);
+      if (b <= a) return '';
+      let s = `M${X(a)},${base}`;
+      for (let i = 0; i <= 80; i++) { const z = a + (b - a) * i / 80; s += `L${X(z).toFixed(1)},${Y(pdf(z)).toFixed(1)}`; }
+      return `<path d="${s}L${X(b)},${base}Z" fill="#a78bfa" fill-opacity=".75"/>`;
+    };
+    let s = '', curve = '';
+    for (let i = 0; i <= 160; i++) { const z = lo + (hi - lo) * i / 160; curve += `${i ? 'L' : 'M'}${X(z).toFixed(1)},${Y(pdf(z)).toFixed(1)}`; }
+    if (info && Number.isFinite(info.z)) {
+      const z = info.z, a = Math.abs(z);
+      s += {
+        le: () => area(lo, z), ge: () => area(z, hi),
+        central: () => area(-a, a), tails: () => area(lo, -a) + area(a, hi),
+      }[info.type]();
+      const marks = info.type === 'le' || info.type === 'ge' ? [z] : [-a, a];
+      marks.forEach((m) => {
+        if (m < lo || m > hi) return;
+        s += `<line x1="${X(m)}" y1="${base}" x2="${X(m)}" y2="${Y(pdf(m))}" stroke="#2563eb" stroke-width="1.5"/>` +
+             `<circle cx="${X(m)}" cy="${Y(pdf(m))}" r="4" fill="#fff" stroke="#2563eb" stroke-width="2"/>`;
+      });
+      s += `<text x="${W / 2}" y="16" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6" font-family="Segoe UI, Arial, sans-serif">${pct(info.p)}</text>`;
+    }
+    s += `<path d="${curve}" fill="none" stroke="#1e1b4b" stroke-width="1.5"/>`;
+    s += `<line x1="${L}" y1="${base}" x2="${W - Rr}" y2="${base}" stroke="#94a3b8"/>`;
+    for (let k = -3; k <= 3; k++) {
+      s += `<text x="${X(k)}" y="${base + 16}" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Segoe UI, Arial, sans-serif">${k === 0 ? '0' : (k > 0 ? k : '−' + -k)}${$('cvVar').value === 'x' ? (k === 0 ? 'μ' : 'σ') : ''}</text>`;
+    }
+    $('cvChart').innerHTML = s;
+  }
+
+  function cvSend() {
+    const { mu, sigma } = cvParams();
+    const x = readNumber('cvVal');
+    if (!Number.isFinite(x) || !Number.isFinite(mu) || !(sigma > 0)) return;
+    const type = $('cvType').value, dist = Math.abs(x - mu);
+    $('mu').value = mu; $('sigma').value = sigma;
+    if (type === 'le' || type === 'ge') {
+      $('x1').value = x;
+      setMode(type === 'le' ? 'left' : 'right');
+    } else {
+      $('x1').value = +(mu - dist).toPrecision(10);
+      $('x2').value = +(mu + dist).toPrecision(10);
+      setMode(type === 'central' ? 'between' : 'tails');
+    }
+    $('calculator').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function initConverter() {
+    cvFillTypes();
+    $('cvVar').addEventListener('change', () => { cvFillTypes(); cv.source = 'val'; cvUpdate(); });
+    $('cvType').addEventListener('change', cvUpdate);
+    ['cvMu', 'cvSigma'].forEach((id) => $(id).addEventListener('input', cvUpdate));
+    $('cvVal').addEventListener('input', () => { cv.source = 'val'; cvUpdate(); });
+    $('cvProb').addEventListener('input', () => { cv.source = 'prob'; cvUpdate(); });
+    $('cvSend').addEventListener('click', cvSend);
+    cvUpdate();
+  }
+
+  /* ------------------------------------------------- secciones desplegables */
+  function initFolds() {
+    const KEY = 'normal-calc-folds';
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) { /* sin almacenamiento */ }
+    const folds = document.querySelectorAll('details[data-fold]');
+    folds.forEach((f) => {
+      if (saved[f.dataset.fold] !== undefined) f.open = saved[f.dataset.fold];
+      f.addEventListener('toggle', () => {
+        saved[f.dataset.fold] = f.open;
+        try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (_) { /* nada */ }
+      });
+    });
+    const resultFolds = () => $('resultCard').querySelectorAll('details.fold');
+    $('expandAll').addEventListener('click', () => resultFolds().forEach((f) => { f.open = true; }));
+    $('collapseAll').addEventListener('click', () => resultFolds().forEach((f) => { f.open = false; }));
+    // el enlace "Teoría" del menú abre la sección
+    document.querySelectorAll('a[href="#theory"]').forEach((a) => a.addEventListener('click', () => { $('theory').open = true; }));
+    // al imprimir se muestran todas las secciones
+    let before = [];
+    window.addEventListener('beforeprint', () => { before = [...resultFolds()].map((f) => f.open); resultFolds().forEach((f) => { f.open = true; }); });
+    window.addEventListener('afterprint', () => resultFolds().forEach((f, i) => { f.open = before[i]; }));
+  }
+
   /* ------------------------------------------------------------- eventos */
   function init() {
     document.querySelectorAll('.mode-btn').forEach((b) => {
@@ -590,6 +821,8 @@
     }));
 
     setupDrag();
+    initConverter();
+    initFolds();
     setMode('left');
   }
 

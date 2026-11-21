@@ -10,11 +10,14 @@ Abrí `index.html` en el navegador.
 **Inversa:** x dado P(X ≤ x), x dado P(X ≥ x), valores de cola x₁, x₂ (central o α).
 **Otros:** puntaje Z.
 
-Incluye:
-- Gráfico interactivo (arrastrá los puntos azules), etiquetas de %, marcas σ, exportar PNG/SVG e imprimir.
+Incluye (en secciones desplegables):
+- Gráfico interactivo: tooltip con x, f(x) y P(X ≤ x) al pasar el mouse, puntos arrastrables, etiquetas de %, marcas σ, exportar PNG/SVG e imprimir.
+- Probabilidades relacionadas para los mismos valores.
 - Medidas de la distribución (media, mediana, moda, varianza, cuartiles, IQR…).
 - Cálculo paso a paso.
 - Código R y fórmulas de Excel (español e inglés).
+- Conversor rápido valor ⇄ probabilidad (puntaje z o puntaje bruto).
+- Sección de teoría: fórmulas, regla empírica, Teorema Central del Límite y normal estándar.
 
 ## Estructura
 
