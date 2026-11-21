@@ -195,6 +195,7 @@
 
   /* ------------------------------------------------------------- control */
   function ciRun(showErrors = false) {
+    if (showErrors) $('ciResult').dataset.started = '1'; // ya se tocó "Calcular"
     const inp = ciValidate();
     if (inp.error) {
       if (showErrors) { $('ciError').textContent = inp.error; $('ciError').hidden = false; }
@@ -203,23 +204,24 @@
     $('ciError').hidden = true;
     ciState.last = ciCompute(inp);
     ciRender(ciState.last);
-    window.Calc.setStale('ciResult', false);
     return true;
   }
 
-  const stale = () => window.Calc.setStale('ciResult', true);
+  /** Después del primer "Calcular", los cambios se recalculan al instante. */
+  const liveUpdate = () => { if ($('ciResult').dataset.started) ciRun(); };
 
   function init() {
     ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => {
-      $(id).addEventListener('input', stale);
+      $(id).addEventListener('input', liveUpdate);
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') ciRun(true); });
     });
-    $('ciSdType').addEventListener('change', stale);
-    $('ciDecimals').addEventListener('change', () => { if (window.Calc.isFresh('ciResult')) ciRun(true); });
+    $('ciSdType').addEventListener('change', liveUpdate);
+    $('ciDecimals').addEventListener('change', () => { liveUpdate(); });
     $('ciE').addEventListener('input', () => { ciState.autoE = false; if (ciState.last) ciSize(ciState.last); });
-    document.querySelectorAll('[data-ci-conf]').forEach((b) => b.addEventListener('click', () => { $('ciConf').value = b.dataset.ciConf; stale(); }));
+    document.querySelectorAll('[data-ci-conf]').forEach((b) => b.addEventListener('click', () => { $('ciConf').value = b.dataset.ciConf; liveUpdate(); }));
     $('ciCalcBtn').addEventListener('click', () => { if (ciRun(true)) $('ciResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('ciClearBtn').addEventListener('click', () => {
+      delete $('ciResult').dataset.started;
       ['ciN', 'ciMean', 'ciSd'].forEach((id) => { $(id).value = ''; $(id).classList.remove('invalid'); });
       $('ciError').hidden = true; $('ciResult').hidden = true; ciState.autoE = true; $('ciE').value = '';
     });
@@ -227,7 +229,7 @@
       $('ciN').value = 60; $('ciMean').value = 998.6; $('ciSd').value = 3.2; $('ciConf').value = 95;
       ciState.autoE = true; $('ciE').value = '';
       ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => $(id).classList.remove('invalid'));
-      stale();
+      liveUpdate();
     });
     const folds = () => $('ciResult').querySelectorAll('details.fold');
     $('ciExpandAll').addEventListener('click', () => folds().forEach((f) => { f.open = true; }));

@@ -93,25 +93,6 @@
     el.hidden = !msg;
   }
 
-  /** Marca (o desmarca) un resultado como desactualizado: los datos cambiaron y falta tocar "Calcular". */
-  function setStale(resultId, stale) {
-    const el = $(resultId);
-    if (!el) return;
-    if (stale && el.hidden) return; // no hay resultado visible
-    el.classList.toggle('stale', stale);
-    let note = el.querySelector(':scope > .stale-note');
-    if (!note) {
-      note = document.createElement('div');
-      note.className = 'stale-note';
-      note.innerHTML = '↻ Cambiaste los datos. Tocá <b>Calcular</b> para actualizar el resultado.';
-      el.prepend(note);
-    }
-    note.hidden = !stale;
-  }
-
-  /** true si el resultado está visible y corresponde a los datos actuales. */
-  const isFresh = (resultId) => !$(resultId).hidden && !$(resultId).classList.contains('stale');
-
   /** Descarga el gráfico SVG con id svgId como imagen PNG (2x, fondo blanco). */
   function savePng(svgId, filename) {
     const svg = $(svgId);
@@ -149,5 +130,5 @@
     document.querySelectorAll('[data-png]').forEach((b) => b.addEventListener('click', () => savePng(b.dataset.png, b.dataset.pngName || 'grafico.png')));
   });
 
-  global.Calc = { $, fmt, readNum, niceTicks, lnGamma, lnFact, lnChoose, choose, wireFoldButtons, showError, savePng, setStale, isFresh };
+  global.Calc = { $, fmt, readNum, niceTicks, lnGamma, lnFact, lnChoose, choose, wireFoldButtons, showError, savePng };
 })(window);

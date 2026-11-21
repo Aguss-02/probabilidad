@@ -255,9 +255,11 @@
     }
   }
 
-  const stale = () => window.Calc.setStale('rResult', true);
+  /** Después del primer "Calcular", los cambios se recalculan al instante. */
+  const liveUpdate = () => { if ($('rResult').dataset.started) run(); };
 
   function run(showErrors = false) {
+    if (showErrors) $('rResult').dataset.started = '1'; // ya se tocó "Calcular"
     const { pts, bad, header } = parse($('rData').value);
     state.bad = bad;
     updateCount();
@@ -277,17 +279,17 @@
       if (!$('rYName').value.trim()) $('rYName').value = header[1];
     }
     render(state.last);
-    window.Calc.setStale('rResult', false);
     return true;
   }
 
   function init() {
-    $('rData').addEventListener('input', () => { updateCount(); stale(); });
-    ['rX0', 'rXName', 'rYName'].forEach((id) => $(id).addEventListener('input', stale));
+    $('rData').addEventListener('input', () => { updateCount(); liveUpdate(); });
+    ['rX0', 'rXName', 'rYName'].forEach((id) => $(id).addEventListener('input', liveUpdate));
     $('rX0').addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
-    ['rDecimals', 'rResiduals'].forEach((id) => $(id).addEventListener('change', () => { if (window.Calc.isFresh('rResult')) run(true); }));
+    ['rDecimals', 'rResiduals'].forEach((id) => $(id).addEventListener('change', () => { liveUpdate(); }));
     $('rCalcBtn').addEventListener('click', () => { if (run(true)) $('rResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('rClearBtn').addEventListener('click', () => {
+      delete $('rResult').dataset.started;
       ['rData', 'rX0', 'rXName', 'rYName'].forEach((id) => { $(id).value = ''; });
       $('rResult').hidden = true; $('rCount').textContent = ''; showError('rError', '');
     });
@@ -295,7 +297,7 @@
       $('rData').value = EXAMPLE.data.map((p) => p.join('\t')).join('\n');
       $('rXName').value = EXAMPLE.xName; $('rYName').value = EXAMPLE.yName; $('rX0').value = EXAMPLE.x0;
       updateCount();
-      stale();
+      liveUpdate();
     });
     wireFoldButtons('rExpandAll', 'rCollapseAll', 'rResult');
     // arrancar con el ejemplo cargado

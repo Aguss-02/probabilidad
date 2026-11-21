@@ -37,10 +37,11 @@
     ['uA', 'uB', 'uX1', 'uX2'].forEach((id) => { $(id).step = kind === 'disc' ? '1' : 'any'; });
     $('uExampleText').hidden = true;
     syncFields();
-    stale();
+    liveUpdate();
   }
 
-  const stale = () => window.Calc.setStale('uResult', true);
+  /** Después del primer "Calcular", los cambios se recalculan al instante. */
+  const liveUpdate = () => { if ($('uResult').dataset.started) run(); };
 
   function syncFields() {
     const t = $('uType').value;
@@ -299,25 +300,26 @@
 
   /* ---------------------------------------------------------- control */
   function run(showErrors = false) {
+    if (showErrors) $('uResult').dataset.started = '1'; // ya se tocó "Calcular"
     const v = validate();
     if (v.error) { if (showErrors) showError('uError', v.error); return false; }
     showError('uError', '');
     state.last = state.kind === 'cont' ? computeCont(v) : computeDisc(v);
     render(state.last);
-    window.Calc.setStale('uResult', false);
     return true;
   }
 
   function init() {
     document.querySelectorAll('#uKindTabs .mode-btn').forEach((b) => b.addEventListener('click', () => setKind(b.dataset.ukind)));
     ['uA', 'uB', 'uX1', 'uX2', 'uP'].forEach((id) => {
-      $(id).addEventListener('input', stale);
+      $(id).addEventListener('input', liveUpdate);
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
     });
-    $('uType').addEventListener('change', () => { syncFields(); stale(); });
-    $('uDecimals').addEventListener('change', () => { if (window.Calc.isFresh('uResult')) run(true); });
+    $('uType').addEventListener('change', () => { syncFields(); liveUpdate(); });
+    $('uDecimals').addEventListener('change', () => { liveUpdate(); });
     $('uCalcBtn').addEventListener('click', () => { if (run(true)) $('uResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('uClearBtn').addEventListener('click', () => {
+      delete $('uResult').dataset.started;
       ['uX1', 'uX2', 'uP'].forEach((id) => { $(id).value = ''; });
       $('uResult').hidden = true; $('uExampleText').hidden = true; showError('uError', '');
     });
@@ -329,7 +331,7 @@
       $('uExampleText').innerHTML = `<b>Ejemplo:</b> ${ex.text}`;
       $('uExampleText').hidden = false;
       ['uA', 'uB', 'uX1', 'uX2', 'uP'].forEach((id) => $(id).classList.remove('invalid'));
-      stale();
+      liveUpdate();
     });
     wireFoldButtons('uExpandAll', 'uCollapseAll', 'uResult');
     setKind('cont');

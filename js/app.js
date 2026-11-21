@@ -544,6 +544,7 @@
   }
 
   function run(showErrors = false) {
+    if (showErrors) $('resultCard').dataset.started = '1'; // ya se tocó "Calcular"
     const inp = validate();
     const err = $('error');
     if (inp.error) {
@@ -553,7 +554,6 @@
     err.hidden = true;
     state.last = compute(inp);
     render(state.last);
-    window.Calc.setStale('resultCard', false);
     return true;
   }
 
@@ -566,13 +566,12 @@
     if (cfg.pLabel) $('pLabel').textContent = cfg.pLabel;
     state.range = null;
     $('error').hidden = true;
-    stale();
+    liveUpdate();
   }
 
-  /** Los datos cambiaron: no se recalcula hasta tocar "Calcular". */
-  function stale() { window.Calc.setStale('resultCard', true); }
-  /** Opciones de presentación: se redibuja solo si ya hay un resultado vigente. */
-  function refresh() { if (window.Calc.isFresh('resultCard')) run(true); }
+  /** Después del primer "Calcular", los cambios se recalculan al instante. */
+  function liveUpdate() { if ($('resultCard').dataset.started) run(); }
+  function refresh() { liveUpdate(); }
 
 
   /* ------------------------------------------------------------- tabla Z */
@@ -691,10 +690,10 @@
     });
 
     ['mu', 'sigma', 'x1', 'x2', 'p'].forEach((id) => {
-      $(id).addEventListener('input', () => { state.range = null; stale(); });
+      $(id).addEventListener('input', () => { state.range = null; liveUpdate(); });
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
     });
-    $('pType').addEventListener('change', stale);
+    $('pType').addEventListener('change', liveUpdate);
     ['decimals', 'range'].forEach((id) => $(id).addEventListener('change', () => { state.range = null; refresh(); }));
     ['showLabels', 'showSigma', 'fontScale'].forEach((id) => $(id).addEventListener('change', () => state.last && drawChart(state.last)));
 
@@ -703,6 +702,7 @@
       if (run(true)) $('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     $('clearBtn').addEventListener('click', () => {
+      delete $('resultCard').dataset.started;
       ['x1', 'x2', 'p'].forEach((id) => { $(id).value = ''; });
       markInvalid([]);
       $('error').hidden = true;
@@ -712,7 +712,7 @@
       $('mu').value = 20; $('sigma').value = 5; $('x1').value = 18; $('x2').value = 22; $('p').value = 0.95;
       state.range = null;
       markInvalid([]);
-      stale();
+      liveUpdate();
     });
 
     document.querySelectorAll('[data-quick]').forEach((b) => b.addEventListener('click', () => {
@@ -728,7 +728,7 @@
         if (state.mode !== 'between' && state.mode !== 'tails') { setMode('between'); return; }
       }
       state.range = null;
-      stale();
+      liveUpdate();
     }));
 
 
