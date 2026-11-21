@@ -13,7 +13,6 @@
       <p class="subtitle">Probabilidad y Estadística · X ~ N(μ, σ²)</p>
       <nav class="top-nav">
         <a href="#calculator">Calculadora</a>
-        <a href="#converter">Conversor rápido</a>
         <a href="#theory">Teoría</a>
       </nav>
     </div>
@@ -185,45 +184,6 @@
             <div class="code"><pre id="excelEs"></pre><button class="copy" data-copy="excelEs">Copiar</button></div>
             <h3 class="code-title">Excel (inglés)</h3>
             <div class="code"><pre id="excelEn"></pre><button class="copy" data-copy="excelEn">Copiar</button></div>
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <!-- Conversor rápido -->
-    <section class="card" id="converter">
-      <h2 class="card-title">Conversor rápido: valor ⇄ probabilidad</h2>
-      <p class="muted">Escribí en <b>cualquiera</b> de los dos casilleros y el otro se completa al instante. Ideal para reemplazar la tabla normal del final del libro.</p>
-
-      <div class="conv-grid">
-        <div class="conv-form">
-          <label class="field">
-            <span>Variable</span>
-            <select id="cvVar">
-              <option value="z">Puntaje z (normal estándar)</option>
-              <option value="x">Puntaje bruto x (cualquier normal)</option>
-            </select>
-          </label>
-          <div class="conv-params" id="cvParams" hidden>
-            <label class="field"><span>Media (μ)</span><input type="number" id="cvMu" value="100" step="any"></label>
-            <label class="field"><span>Desv. estándar (σ)</span><input type="number" id="cvSigma" value="15" step="any"></label>
-          </div>
-          <label class="field">
-            <span>Probabilidad</span>
-            <select id="cvType"></select>
-          </label>
-          <div class="conv-pair">
-            <label class="field"><span id="cvValLabel">Puntaje z</span><input type="number" id="cvVal" value="1.96" step="any"></label>
-            <span class="conv-arrow" aria-hidden="true">⇄</span>
-            <label class="field"><span id="cvProbLabel">Probabilidad</span><input type="number" id="cvProb" step="any" min="0" max="1"></label>
-          </div>
-          <div class="error" id="cvError" hidden></div>
-          <button class="btn small" id="cvSend">Abrir en la calculadora completa ↑</button>
-        </div>
-        <details class="fold conv-fold" data-fold="cvChart">
-          <summary><span class="fold-icon">📈</span> Ver gráfico</summary>
-          <div class="fold-body">
-            <svg id="cvChart" class="conv-chart" viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" aria-label="Área sombreada"></svg>
           </div>
         </details>
       </div>

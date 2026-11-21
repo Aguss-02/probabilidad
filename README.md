@@ -16,7 +16,6 @@ Incluye (en secciones desplegables):
 - Medidas de la distribución (media, mediana, moda, varianza, cuartiles, IQR…).
 - Cálculo paso a paso.
 - Código R y fórmulas de Excel (español e inglés).
-- Conversor rápido valor ⇄ probabilidad (puntaje z o puntaje bruto).
 - Sección de teoría: fórmulas, regla empírica, Teorema Central del Límite y normal estándar.
 
 ## Estructura

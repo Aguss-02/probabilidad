@@ -612,130 +612,6 @@
     img.src = url;
   }
 
-  /* ------------------------------------------------------ conversor rápido */
-  const CV_TYPES = {
-    z: [
-      ['le', 'P(Z ≤ z)'], ['ge', 'P(Z ≥ z)'], ['central', 'P(−z ≤ Z ≤ z)  · central'], ['tails', 'P(Z ≤ −z) + P(Z ≥ z)  · dos colas'],
-    ],
-    x: [
-      ['le', 'P(X ≤ x)'], ['ge', 'P(X ≥ x)'], ['central', 'P(μ − d ≤ X ≤ μ + d)  · central, d = |x − μ|'], ['tails', 'Fuera de μ ± d  · dos colas, d = |x − μ|'],
-    ],
-  };
-  const cv = { source: 'val' }; // qué casillero escribió el usuario por última vez
-
-  function cvParams() {
-    if ($('cvVar').value === 'z') return { mu: 0, sigma: 1 };
-    return { mu: readNumber('cvMu'), sigma: readNumber('cvSigma') };
-  }
-
-  function cvFillTypes() {
-    const v = $('cvVar').value, prev = $('cvType').value;
-    $('cvType').innerHTML = CV_TYPES[v].map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
-    if (prev) $('cvType').value = prev;
-    $('cvParams').hidden = v === 'z';
-    $('cvValLabel').textContent = v === 'z' ? 'Puntaje z' : 'Puntaje bruto (x)';
-  }
-
-  function cvProbLabel(type, v) {
-    const s = v === 'z' ? 'Z' : 'X', t = v === 'z' ? 'z' : 'x';
-    return { le: `P(${s} ≤ ${t})`, ge: `P(${s} ≥ ${t})`, central: 'Prob. central', tails: 'Prob. en las colas' }[type];
-  }
-
-  function cvUpdate() {
-    const v = $('cvVar').value, type = $('cvType').value;
-    const { mu, sigma } = cvParams();
-    const err = $('cvError');
-    $('cvProbLabel').textContent = cvProbLabel(type, v);
-    const fail = (m) => { err.textContent = m; err.hidden = false; };
-    err.hidden = true;
-    if (!Number.isFinite(mu) || !(sigma > 0)) return fail('Revisá la media y la desviación estándar (σ > 0).');
-    const d = Normal(mu, sigma);
-    let x, p;
-    if (cv.source === 'val') {
-      x = readNumber('cvVal');
-      if (!Number.isFinite(x)) { $('cvProb').value = ''; return cvChart(null); }
-      const dist = Math.abs(x - mu);
-      p = { le: d.cdf(x), ge: d.sf(x), central: d.between(mu - dist, mu + dist), tails: d.cdf(mu - dist) + d.sf(mu + dist) }[type];
-      $('cvProb').value = +p.toPrecision(10);
-    } else {
-      p = readNumber('cvProb');
-      if (!(p > 0 && p < 1)) { $('cvVal').value = ''; cvChart(null); return fail('La probabilidad debe estar entre 0 y 1.'); }
-      x = {
-        le: d.inv(p), ge: d.invUpper(p),
-        central: mu + sigma * stdInv((1 + p) / 2), tails: mu + sigma * stdInv(1 - p / 2),
-      }[type];
-      $('cvVal').value = +x.toPrecision(10);
-    }
-    $('cvVal').classList.toggle('filled', cv.source === 'prob');
-    $('cvProb').classList.toggle('filled', cv.source === 'val');
-    cvChart({ z: (x - mu) / sigma, type, p });
-  }
-
-  function cvChart(info) {
-    const W = 320, H = 170, L = 10, Rr = 10, base = 140, top = 26;
-    const lo = -4, hi = 4;
-    const X = (z) => L + (z - lo) / (hi - lo) * (W - L - Rr);
-    const Y = (y) => base - y / 0.4 * (base - top);
-    const pdf = window.NormalDist.stdPdf;
-    const area = (a, b) => {
-      a = Math.max(a, lo); b = Math.min(b, hi);
-      if (b <= a) return '';
-      let s = `M${X(a)},${base}`;
-      for (let i = 0; i <= 80; i++) { const z = a + (b - a) * i / 80; s += `L${X(z).toFixed(1)},${Y(pdf(z)).toFixed(1)}`; }
-      return `<path d="${s}L${X(b)},${base}Z" fill="#a78bfa" fill-opacity=".75"/>`;
-    };
-    let s = '', curve = '';
-    for (let i = 0; i <= 160; i++) { const z = lo + (hi - lo) * i / 160; curve += `${i ? 'L' : 'M'}${X(z).toFixed(1)},${Y(pdf(z)).toFixed(1)}`; }
-    if (info && Number.isFinite(info.z)) {
-      const z = info.z, a = Math.abs(z);
-      s += {
-        le: () => area(lo, z), ge: () => area(z, hi),
-        central: () => area(-a, a), tails: () => area(lo, -a) + area(a, hi),
-      }[info.type]();
-      const marks = info.type === 'le' || info.type === 'ge' ? [z] : [-a, a];
-      marks.forEach((m) => {
-        if (m < lo || m > hi) return;
-        s += `<line x1="${X(m)}" y1="${base}" x2="${X(m)}" y2="${Y(pdf(m))}" stroke="#2563eb" stroke-width="1.5"/>` +
-             `<circle cx="${X(m)}" cy="${Y(pdf(m))}" r="4" fill="#fff" stroke="#2563eb" stroke-width="2"/>`;
-      });
-      s += `<text x="${W / 2}" y="16" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6" font-family="Segoe UI, Arial, sans-serif">${pct(info.p)}</text>`;
-    }
-    s += `<path d="${curve}" fill="none" stroke="#1e1b4b" stroke-width="1.5"/>`;
-    s += `<line x1="${L}" y1="${base}" x2="${W - Rr}" y2="${base}" stroke="#94a3b8"/>`;
-    for (let k = -3; k <= 3; k++) {
-      s += `<text x="${X(k)}" y="${base + 16}" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Segoe UI, Arial, sans-serif">${k === 0 ? '0' : (k > 0 ? k : '−' + -k)}${$('cvVar').value === 'x' ? (k === 0 ? 'μ' : 'σ') : ''}</text>`;
-    }
-    $('cvChart').innerHTML = s;
-  }
-
-  function cvSend() {
-    const { mu, sigma } = cvParams();
-    const x = readNumber('cvVal');
-    if (!Number.isFinite(x) || !Number.isFinite(mu) || !(sigma > 0)) return;
-    const type = $('cvType').value, dist = Math.abs(x - mu);
-    $('mu').value = mu; $('sigma').value = sigma;
-    if (type === 'le' || type === 'ge') {
-      $('x1').value = x;
-      setMode(type === 'le' ? 'left' : 'right');
-    } else {
-      $('x1').value = +(mu - dist).toPrecision(10);
-      $('x2').value = +(mu + dist).toPrecision(10);
-      setMode(type === 'central' ? 'between' : 'tails');
-    }
-    $('calculator').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function initConverter() {
-    cvFillTypes();
-    $('cvVar').addEventListener('change', () => { cvFillTypes(); cv.source = 'val'; cvUpdate(); });
-    $('cvType').addEventListener('change', cvUpdate);
-    ['cvMu', 'cvSigma'].forEach((id) => $(id).addEventListener('input', cvUpdate));
-    $('cvVal').addEventListener('input', () => { cv.source = 'val'; cvUpdate(); });
-    $('cvProb').addEventListener('input', () => { cv.source = 'prob'; cvUpdate(); });
-    $('cvSend').addEventListener('click', cvSend);
-    cvUpdate();
-  }
-
   /* ------------------------------------------------- secciones desplegables */
   function initFolds() {
     const KEY = 'normal-calc-folds';
@@ -821,7 +697,6 @@
     }));
 
     setupDrag();
-    initConverter();
     initFolds();
     setMode('left');
   }
