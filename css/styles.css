@@ -287,3 +287,7 @@ ul.checks li::before { content: "✓"; position: absolute; left: 4px; color: #16
 @media print { #discTheory, #unifTheory, #regTheory, .step-box .choice-grid { display: none !important; } }
 .calc-tab > span:last-child { min-width: 0; }
 .calc-tab small { line-height: 1.25; }
+
+/* ---------- resultado desactualizado ---------- */
+.stale-note { margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; font-size: .92rem; }
+.result-card.stale > :not(.stale-note) { opacity: .4; filter: grayscale(.6); pointer-events: none; transition: opacity .2s; }

@@ -37,8 +37,10 @@
     ['uA', 'uB', 'uX1', 'uX2'].forEach((id) => { $(id).step = kind === 'disc' ? '1' : 'any'; });
     $('uExampleText').hidden = true;
     syncFields();
-    run();
+    stale();
   }
+
+  const stale = () => window.Calc.setStale('uResult', true);
 
   function syncFields() {
     const t = $('uType').value;
@@ -302,17 +304,18 @@
     showError('uError', '');
     state.last = state.kind === 'cont' ? computeCont(v) : computeDisc(v);
     render(state.last);
+    window.Calc.setStale('uResult', false);
     return true;
   }
 
   function init() {
     document.querySelectorAll('#uKindTabs .mode-btn').forEach((b) => b.addEventListener('click', () => setKind(b.dataset.ukind)));
     ['uA', 'uB', 'uX1', 'uX2', 'uP'].forEach((id) => {
-      $(id).addEventListener('input', () => run());
+      $(id).addEventListener('input', stale);
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
     });
-    $('uType').addEventListener('change', () => { syncFields(); run(); });
-    $('uDecimals').addEventListener('change', () => run());
+    $('uType').addEventListener('change', () => { syncFields(); stale(); });
+    $('uDecimals').addEventListener('change', () => { if (window.Calc.isFresh('uResult')) run(true); });
     $('uCalcBtn').addEventListener('click', () => { if (run(true)) $('uResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('uClearBtn').addEventListener('click', () => {
       ['uX1', 'uX2', 'uP'].forEach((id) => { $(id).value = ''; });
@@ -325,10 +328,10 @@
       syncFields();
       $('uExampleText').innerHTML = `<b>Ejemplo:</b> ${ex.text}`;
       $('uExampleText').hidden = false;
-      run(true);
+      ['uA', 'uB', 'uX1', 'uX2', 'uP'].forEach((id) => $(id).classList.remove('invalid'));
+      stale();
     });
     wireFoldButtons('uExpandAll', 'uCollapseAll', 'uResult');
-    document.addEventListener('calc:show', (e) => { if (e.detail === 'unif') run(); });
     setKind('cont');
   }
 

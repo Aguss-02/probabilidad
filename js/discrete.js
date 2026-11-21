@@ -200,8 +200,10 @@
     if (D.nLabel) $('dNLabel').textContent = D.nLabel;
     $('dFormula').innerHTML = `<b>${D.name}:</b> ${D.formula}`;
     $('dExampleText').hidden = true;
-    run();
+    stale();
   }
+
+  const stale = () => window.Calc.setStale('dResult', true);
 
   function syncTypeFields() {
     const between = $('dType').value === 'between';
@@ -482,6 +484,7 @@
     showError('dError', '');
     state.last = compute(v.P, v.ev);
     render(state.last);
+    window.Calc.setStale('dResult', false);
     return true;
   }
 
@@ -497,7 +500,7 @@
     renderChooser();
     $('dExampleText').innerHTML = `<b>Ejemplo:</b> ${ex.text}`;
     $('dExampleText').hidden = false;
-    run(true);
+    stale();
   }
 
   function init() {
@@ -506,15 +509,15 @@
       if (g.dataset.q === 'q1' && c.dataset.value !== 'exitos') state.q2 = null;
       renderChooser();
       const rec = recommended();
-      if (rec) setDist(rec); else run();
+      if (rec) setDist(rec); else stale();
     })));
     document.querySelectorAll('#dDistTabs .mode-btn').forEach((b) => b.addEventListener('click', () => setDist(b.dataset.dist)));
     ['dN', 'dP', 'dLambda', 'dPopN', 'dPopK', 'dK', 'dA', 'dB'].forEach((id) => {
-      $(id).addEventListener('input', () => run());
+      $(id).addEventListener('input', stale);
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
     });
-    $('dType').addEventListener('change', () => { syncTypeFields(); run(); });
-    $('dDecimals').addEventListener('change', () => run());
+    $('dType').addEventListener('change', () => { syncTypeFields(); stale(); });
+    $('dDecimals').addEventListener('change', () => { if (window.Calc.isFresh('dResult')) run(true); });
     $('dCalcBtn').addEventListener('click', () => { if (run(true)) $('dResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('dClearBtn').addEventListener('click', () => {
       ['dK', 'dA', 'dB'].forEach((id) => { $(id).value = ''; });
@@ -523,7 +526,6 @@
     });
     $('dExampleBtn').addEventListener('click', loadExample);
     wireFoldButtons('dExpandAll', 'dCollapseAll', 'dResult');
-    document.addEventListener('calc:show', (e) => { if (e.detail === 'disc') run(); });
     syncTypeFields();
     renderChooser();
     setDist('binom');

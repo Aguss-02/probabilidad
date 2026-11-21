@@ -203,19 +203,21 @@
     $('ciError').hidden = true;
     ciState.last = ciCompute(inp);
     ciRender(ciState.last);
+    window.Calc.setStale('ciResult', false);
     return true;
   }
 
-  function init() {
-    document.addEventListener('calc:show', (e) => { if (e.detail === 'ci') ciRun(); });
+  const stale = () => window.Calc.setStale('ciResult', true);
 
+  function init() {
     ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => {
-      $(id).addEventListener('input', () => ciRun());
+      $(id).addEventListener('input', stale);
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') ciRun(true); });
     });
-    ['ciDecimals', 'ciSdType'].forEach((id) => $(id).addEventListener('change', () => ciRun()));
+    $('ciSdType').addEventListener('change', stale);
+    $('ciDecimals').addEventListener('change', () => { if (window.Calc.isFresh('ciResult')) ciRun(true); });
     $('ciE').addEventListener('input', () => { ciState.autoE = false; if (ciState.last) ciSize(ciState.last); });
-    document.querySelectorAll('[data-ci-conf]').forEach((b) => b.addEventListener('click', () => { $('ciConf').value = b.dataset.ciConf; ciRun(true); }));
+    document.querySelectorAll('[data-ci-conf]').forEach((b) => b.addEventListener('click', () => { $('ciConf').value = b.dataset.ciConf; stale(); }));
     $('ciCalcBtn').addEventListener('click', () => { if (ciRun(true)) $('ciResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('ciClearBtn').addEventListener('click', () => {
       ['ciN', 'ciMean', 'ciSd'].forEach((id) => { $(id).value = ''; $(id).classList.remove('invalid'); });
@@ -224,7 +226,8 @@
     $('ciExampleBtn').addEventListener('click', () => {
       $('ciN').value = 60; $('ciMean').value = 998.6; $('ciSd').value = 3.2; $('ciConf').value = 95;
       ciState.autoE = true; $('ciE').value = '';
-      ciRun(true);
+      ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => $(id).classList.remove('invalid'));
+      stale();
     });
     const folds = () => $('ciResult').querySelectorAll('details.fold');
     $('ciExpandAll').addEventListener('click', () => folds().forEach((f) => { f.open = true; }));

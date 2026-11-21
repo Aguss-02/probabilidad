@@ -93,5 +93,61 @@
     el.hidden = !msg;
   }
 
-  global.Calc = { $, fmt, readNum, niceTicks, lnGamma, lnFact, lnChoose, choose, wireFoldButtons, showError };
+  /** Marca (o desmarca) un resultado como desactualizado: los datos cambiaron y falta tocar "Calcular". */
+  function setStale(resultId, stale) {
+    const el = $(resultId);
+    if (!el) return;
+    if (stale && el.hidden) return; // no hay resultado visible
+    el.classList.toggle('stale', stale);
+    let note = el.querySelector(':scope > .stale-note');
+    if (!note) {
+      note = document.createElement('div');
+      note.className = 'stale-note';
+      note.innerHTML = '↻ Cambiaste los datos. Tocá <b>Calcular</b> para actualizar el resultado.';
+      el.prepend(note);
+    }
+    note.hidden = !stale;
+  }
+
+  /** true si el resultado está visible y corresponde a los datos actuales. */
+  const isFresh = (resultId) => !$(resultId).hidden && !$(resultId).classList.contains('stale');
+
+  /** Descarga el gráfico SVG con id svgId como imagen PNG (2x, fondo blanco). */
+  function savePng(svgId, filename) {
+    const svg = $(svgId);
+    const [, , w, h] = svg.getAttribute('viewBox').split(' ').map(Number);
+    const clone = svg.cloneNode(true);
+    clone.setAttribute('width', w);
+    clone.setAttribute('height', h);
+    const hover = clone.querySelector('#hoverG'); // no exportar el cursor del gráfico
+    if (hover) hover.remove();
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml;charset=utf-8' }));
+    const img = new Image();
+    img.onload = () => {
+      const scale = 2;
+      const c = document.createElement('canvas');
+      c.width = w * scale; c.height = h * scale;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob((blob) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+      }, 'image/png');
+    };
+    img.src = url;
+  }
+
+  // todos los botones "Guardar PNG": data-png = id del SVG, data-png-name = nombre del archivo
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-png]').forEach((b) => b.addEventListener('click', () => savePng(b.dataset.png, b.dataset.pngName || 'grafico.png')));
+  });
+
+  global.Calc = { $, fmt, readNum, niceTicks, lnGamma, lnFact, lnChoose, choose, wireFoldButtons, showError, savePng, setStale, isFresh };
 })(window);

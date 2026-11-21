@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=9">
+  <link rel="stylesheet" href="css/styles.css?v=11">
 </head>
 <body>
   <header class="site-header">
@@ -151,9 +151,7 @@
         <div class="chart-box">
           <svg id="chart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de la distribución normal"></svg>
           <div class="chart-tools">
-            <button class="btn small" id="savePng">Guardar PNG</button>
-            <button class="btn small" id="saveSvg">Guardar SVG</button>
-            <button class="btn small" id="printBtn">Imprimir</button>
+            <button class="btn small" data-png="chart" data-png-name="distribucion-normal.png">Guardar PNG</button>
             <label class="toggle"><input type="checkbox" id="showLabels" checked><span class="slider"></span> Etiquetas</label>
             <label class="toggle"><input type="checkbox" id="showSigma"><span class="slider"></span> Marcas σ</label>
             <label class="field inline">
@@ -375,6 +373,7 @@
           <div class="fold-body">
             <div class="chart-box">
               <svg id="ciChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Distribución muestral de la media"></svg>
+              <div class="chart-tools"><button class="btn small" data-png="ciChart" data-png-name="intervalo-de-confianza.png">Guardar PNG</button></div>
             </div>
             <p class="hint">Curva de la distribución muestral de x̄: N(x̄, σ²/n). La zona sombreada es el nivel de confianza.</p>
           </div>
@@ -577,7 +576,7 @@
         <details class="fold" data-fold="dChart">
           <summary><span class="fold-icon">📊</span> Gráfico de probabilidades</summary>
           <div class="fold-body">
-            <div class="chart-box"><svg id="dChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de barras de la distribución"></svg></div>
+            <div class="chart-box"><svg id="dChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de barras de la distribución"></svg><div class="chart-tools"><button class="btn small" data-png="dChart" data-png-name="distribucion-discreta.png">Guardar PNG</button></div></div>
             <p class="hint">Las barras violetas son los valores de k que entran en la probabilidad calculada. Pasá el mouse sobre una barra para ver su valor.</p>
           </div>
         </details>
@@ -690,7 +689,7 @@
         <details class="fold" data-fold="uChart">
           <summary><span class="fold-icon">📈</span> Gráfico</summary>
           <div class="fold-body">
-            <div class="chart-box"><svg id="uChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de la distribución uniforme"></svg></div>
+            <div class="chart-box"><svg id="uChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gráfico de la distribución uniforme"></svg><div class="chart-tools"><button class="btn small" data-png="uChart" data-png-name="distribucion-uniforme.png">Guardar PNG</button></div></div>
             <p class="hint">La zona violeta es la probabilidad calculada; la línea punteada marca el valor esperado E[X].</p>
           </div>
         </details>
@@ -802,7 +801,7 @@
         <details class="fold" data-fold="rChart">
           <summary><span class="fold-icon">📈</span> Gráfico de dispersión y recta</summary>
           <div class="fold-body">
-            <div class="chart-box"><svg id="rChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de dispersión con la recta de regresión"></svg></div>
+            <div class="chart-box"><svg id="rChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de dispersión con la recta de regresión"></svg><div class="chart-tools"><button class="btn small" data-png="rChart" data-png-name="regresion-lineal.png">Guardar PNG</button></div></div>
             <p class="hint">Pasá el mouse sobre un punto para ver sus valores. El punto azul es la predicción.</p>
           </div>
         </details>
@@ -882,13 +881,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=9"></script>
-  <script src="js/normal.js?v=9"></script>
-  <script src="js/app.js?v=9"></script>
-  <script src="js/ci.js?v=9"></script>
-  <script src="js/discrete.js?v=9"></script>
-  <script src="js/uniform.js?v=9"></script>
-  <script src="js/regression.js?v=9"></script>
-  <script src="js/switcher.js?v=9"></script>
+  <script src="js/common.js?v=11"></script>
+  <script src="js/normal.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
+  <script src="js/ci.js?v=11"></script>
+  <script src="js/discrete.js?v=11"></script>
+  <script src="js/uniform.js?v=11"></script>
+  <script src="js/regression.js?v=11"></script>
+  <script src="js/switcher.js?v=11"></script>
 </body>
 </html>

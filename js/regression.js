@@ -245,14 +245,22 @@
   }
 
   /* ---------------------------------------------------------- control */
-  function run(showErrors = false) {
+  /** Solo cuenta los pares cargados (no calcula la regresión). */
+  function updateCount() {
     const { pts, bad, header } = parse($('rData').value);
-    state.bad = bad;
     $('rCount').textContent = pts.length ? `${pts.length} par${pts.length === 1 ? '' : 'es'} de datos${bad.length ? ` · ${bad.length} línea(s) con errores` : ''}` : '';
     if (header) {
       if (!$('rXName').value.trim()) $('rXName').placeholder = header[0];
       if (!$('rYName').value.trim()) $('rYName').placeholder = header[1];
     }
+  }
+
+  const stale = () => window.Calc.setStale('rResult', true);
+
+  function run(showErrors = false) {
+    const { pts, bad, header } = parse($('rData').value);
+    state.bad = bad;
+    updateCount();
     let err = '';
     if (pts.length < 3) err = 'Ingresá al menos 3 pares de datos (x, y), uno por línea.';
     else if (new Set(pts.map((p) => p[0])).size < 2) err = 'Todos los valores de x son iguales: no se puede calcular la pendiente.';
@@ -269,13 +277,15 @@
       if (!$('rYName').value.trim()) $('rYName').value = header[1];
     }
     render(state.last);
+    window.Calc.setStale('rResult', false);
     return true;
   }
 
   function init() {
-    ['rData', 'rX0', 'rXName', 'rYName'].forEach((id) => $(id).addEventListener('input', () => run()));
+    $('rData').addEventListener('input', () => { updateCount(); stale(); });
+    ['rX0', 'rXName', 'rYName'].forEach((id) => $(id).addEventListener('input', stale));
     $('rX0').addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
-    ['rDecimals', 'rResiduals'].forEach((id) => $(id).addEventListener('change', () => run()));
+    ['rDecimals', 'rResiduals'].forEach((id) => $(id).addEventListener('change', () => { if (window.Calc.isFresh('rResult')) run(true); }));
     $('rCalcBtn').addEventListener('click', () => { if (run(true)) $('rResult').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     $('rClearBtn').addEventListener('click', () => {
       ['rData', 'rX0', 'rXName', 'rYName'].forEach((id) => { $(id).value = ''; });
@@ -284,13 +294,14 @@
     $('rExampleBtn').addEventListener('click', () => {
       $('rData').value = EXAMPLE.data.map((p) => p.join('\t')).join('\n');
       $('rXName').value = EXAMPLE.xName; $('rYName').value = EXAMPLE.yName; $('rX0').value = EXAMPLE.x0;
-      run(true);
+      updateCount();
+      stale();
     });
     wireFoldButtons('rExpandAll', 'rCollapseAll', 'rResult');
-    document.addEventListener('calc:show', (e) => { if (e.detail === 'reg') run(); });
     // arrancar con el ejemplo cargado
     $('rData').value = EXAMPLE.data.map((p) => p.join('\t')).join('\n');
     $('rXName').value = EXAMPLE.xName; $('rYName').value = EXAMPLE.yName; $('rX0').value = EXAMPLE.x0;
+    updateCount();
   }
 
   document.addEventListener('DOMContentLoaded', init);

@@ -553,6 +553,7 @@
     err.hidden = true;
     state.last = compute(inp);
     render(state.last);
+    window.Calc.setStale('resultCard', false);
     return true;
   }
 
@@ -565,43 +566,14 @@
     if (cfg.pLabel) $('pLabel').textContent = cfg.pLabel;
     state.range = null;
     $('error').hidden = true;
-    run();
+    stale();
   }
 
-  /* -------------------------------------------------------------- exportar */
-  function svgString() {
-    const svg = $('chart').cloneNode(true);
-    svg.setAttribute('width', svg.getAttribute('viewBox').split(' ')[2]);
-    svg.setAttribute('height', svg.getAttribute('viewBox').split(' ')[3]);
-    return new XMLSerializer().serializeToString(svg);
-  }
+  /** Los datos cambiaron: no se recalcula hasta tocar "Calcular". */
+  function stale() { window.Calc.setStale('resultCard', true); }
+  /** Opciones de presentación: se redibuja solo si ya hay un resultado vigente. */
+  function refresh() { if (window.Calc.isFresh('resultCard')) run(true); }
 
-  function download(blob, name) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-  }
-
-  function savePng() {
-    const svg = $('chart');
-    const [, , w, h] = svg.getAttribute('viewBox').split(' ').map(Number);
-    const img = new Image();
-    const url = URL.createObjectURL(new Blob([svgString()], { type: 'image/svg+xml;charset=utf-8' }));
-    img.onload = () => {
-      const scale = 2;
-      const c = document.createElement('canvas');
-      c.width = w * scale; c.height = h * scale;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
-      ctx.drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url);
-      c.toBlob((b) => download(b, 'distribucion-normal.png'), 'image/png');
-    };
-    img.src = url;
-  }
 
   /* ------------------------------------------------------------- tabla Z */
   const zt = { view: null, key: '', zs: [] };
@@ -719,10 +691,11 @@
     });
 
     ['mu', 'sigma', 'x1', 'x2', 'p'].forEach((id) => {
-      $(id).addEventListener('input', () => { state.range = null; run(); });
+      $(id).addEventListener('input', () => { state.range = null; stale(); });
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') run(true); });
     });
-    ['pType', 'decimals', 'range'].forEach((id) => $(id).addEventListener('change', () => { state.range = null; run(); }));
+    $('pType').addEventListener('change', stale);
+    ['decimals', 'range'].forEach((id) => $(id).addEventListener('change', () => { state.range = null; refresh(); }));
     ['showLabels', 'showSigma', 'fontScale'].forEach((id) => $(id).addEventListener('change', () => state.last && drawChart(state.last)));
 
     $('calcBtn').addEventListener('click', () => {
@@ -738,7 +711,8 @@
     $('exampleBtn').addEventListener('click', () => {
       $('mu').value = 20; $('sigma').value = 5; $('x1').value = 18; $('x2').value = 22; $('p').value = 0.95;
       state.range = null;
-      run(true);
+      markInvalid([]);
+      stale();
     });
 
     document.querySelectorAll('[data-quick]').forEach((b) => b.addEventListener('click', () => {
@@ -754,12 +728,9 @@
         if (state.mode !== 'between' && state.mode !== 'tails') { setMode('between'); return; }
       }
       state.range = null;
-      run(true);
+      stale();
     }));
 
-    $('savePng').addEventListener('click', savePng);
-    $('saveSvg').addEventListener('click', () => download(new Blob([svgString()], { type: 'image/svg+xml' }), 'distribucion-normal.svg'));
-    $('printBtn').addEventListener('click', () => window.print());
 
     document.querySelectorAll('.copy').forEach((b) => b.addEventListener('click', async () => {
       const text = $(b.dataset.copy).textContent;
