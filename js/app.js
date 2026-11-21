@@ -549,6 +549,7 @@
     $('excelEn').textContent = R.excelEn;
     $('dragHint').hidden = !R.markers.some((m) => m.field);
     renderRelated(R.related);
+    if (!state.drag) updateZTable(R);
     drawChart(R);
   }
 
@@ -610,6 +611,90 @@
       c.toBlob((b) => download(b, 'distribucion-normal.png'), 'image/png');
     };
     img.src = url;
+  }
+
+  /* ------------------------------------------------------------- tabla Z */
+  const zt = { view: null, key: '', zs: [] };
+
+  function zTableHits(R) {
+    // valores z del cálculo actual, redondeados a 2 decimales como en la tabla impresa
+    return R.markers.map((m) => (m.x - R.mu) / R.sigma).filter(Number.isFinite);
+  }
+
+  function zRowCol(z) {
+    const r = Math.round(Math.abs(z) * 100); // centésimos
+    return { neg: z < 0 || Object.is(z, -0), row: Math.floor(r / 10) / 10, col: (r % 10) / 100, z2: (z < 0 ? -r : r) / 100 };
+  }
+
+  function renderZTable() {
+    const type = $('ztType').value;
+    const view = type === 'mean' ? 'pos' : zt.view;
+    document.querySelectorAll('[data-zview]').forEach((b) => {
+      b.classList.toggle('active', b.dataset.zview === view);
+      b.disabled = type === 'mean' && b.dataset.zview !== 'pos';
+    });
+    const { stdCdf } = window.NormalDist;
+    const val = (z) => (type === 'cdf' ? stdCdf(z) : stdCdf(Math.abs(z)) - 0.5);
+    const hits = zt.zs.filter((z) => Math.abs(z) < 3.495).map(zRowCol);
+    const isHit = (neg, row, col) => hits.some((h) => (type === 'mean' || h.neg === neg) && h.row === row && h.col === col);
+    const rowHit = (neg, row) => hits.some((h) => (type === 'mean' || h.neg === neg) && h.row === row);
+    const colHit = (col) => hits.some((h) => h.col === col);
+
+    const cols = [...Array(10)].map((_, i) => i / 100);
+    let html = '<thead><tr><th>z</th>' + cols.map((c) => `<th class="${colHit(c) ? 'cross' : ''}">${c.toFixed(2)}</th>`).join('') + '</tr></thead><tbody>';
+    const rows = [];
+    if (view !== 'pos') for (let r = 34; r >= 0; r--) rows.push({ neg: true, row: r / 10 });
+    if (view !== 'neg') for (let r = 0; r <= 34; r++) rows.push({ neg: false, row: r / 10 });
+    rows.forEach(({ neg, row }, i) => {
+      const sep = view === 'all' && i > 0 && !neg && rows[i - 1].neg;
+      const rh = rowHit(neg, row);
+      html += `<tr class="${sep ? 'zt-sep' : ''}${rh ? ' zt-row-hit' : ''}"><th class="${rh ? 'cross' : ''}">${neg ? '−' : ''}${row.toFixed(1)}</th>`;
+      cols.forEach((c) => {
+        const z = (neg ? -1 : 1) * (row + c);
+        const hit = isHit(neg, row, c);
+        const cls = hit ? 'hit' : (rh || colHit(c) ? 'cross' : '');
+        html += `<td class="${cls}" title="z = ${fmt(z, 2)}">${val(z).toFixed(4)}</td>`;
+      });
+      html += '</tr>';
+    });
+    $('ztable').innerHTML = html + '</tbody>';
+
+    // explicación de la búsqueda
+    const info = zt.zs.map((z) => {
+      const h = zRowCol(z);
+      if (Math.abs(z) >= 3.495) return `<span class="zt-chip">z = ${fmt(z, 4)}</span> queda fuera de la tabla (|z| ≥ 3.5): Φ(z) ≈ ${z < 0 ? '0' : '1'} (valor exacto: ${fmt(stdCdf(z))}).`;
+      const tv = type === 'cdf' ? stdCdf(h.z2) : stdCdf(Math.abs(h.z2)) - 0.5;
+      const label = type === 'cdf' ? `Φ(${fmt(h.z2, 2)})` : `P(0 ≤ Z ≤ ${fmt(Math.abs(h.z2), 2)})`;
+      const rounded = fmt(z, 4) !== fmt(h.z2, 4) ? ` (redondeado de ${fmt(z, 4)})` : '';
+      return `<span class="zt-chip">z = ${fmt(h.z2, 2)}</span>${rounded} → fila <b>${h.neg && type === 'cdf' ? '−' : ''}${h.row.toFixed(1)}</b>, columna <b>${h.col.toFixed(2)}</b> → ${label} = <b>${tv.toFixed(4)}</b>`;
+    });
+    $('ztInfo').innerHTML = info.join('<br>');
+    scrollZTable();
+  }
+
+  function scrollZTable() {
+    const wrap = $('ztWrap');
+    const cell = wrap.querySelector('td.hit');
+    if (!cell || !wrap.offsetParent) return;
+    const row = cell.parentElement;
+    wrap.scrollTop = row.offsetTop - wrap.clientHeight / 2 + row.offsetHeight / 2;
+  }
+
+  function updateZTable(R) {
+    zt.zs = zTableHits(R);
+    const key = zt.zs.map((z) => z.toFixed(2)).join('|');
+    if (key !== zt.key || !zt.view) {
+      zt.key = key;
+      const anyNeg = zt.zs.some((z) => z < 0), anyPos = zt.zs.some((z) => z >= 0);
+      zt.view = anyNeg && anyPos ? 'all' : anyNeg ? 'neg' : 'pos';
+    }
+    renderZTable();
+  }
+
+  function initZTable() {
+    document.querySelectorAll('[data-zview]').forEach((b) => b.addEventListener('click', () => { zt.view = b.dataset.zview; renderZTable(); }));
+    $('ztType').addEventListener('change', renderZTable);
+    document.querySelector('details[data-fold="ztable"]').addEventListener('toggle', scrollZTable);
   }
 
   /* ------------------------------------------------- secciones desplegables */
@@ -698,6 +783,7 @@
 
     setupDrag();
     initFolds();
+    initZTable();
     setMode('left');
   }
 

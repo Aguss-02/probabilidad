@@ -202,3 +202,25 @@ details.fold-card > summary .card-title { margin: 0; }
 details.fold-card > summary::after { content: "▸"; font-size: 1.2rem; }
 details.fold-card[open] > summary::after { transform: rotate(90deg); }
 details.fold-card[open] > summary { margin-bottom: 10px; }
+
+/* ---------- tabla Z ---------- */
+.zt-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 8px 0 10px; }
+.seg { display: inline-flex; border: 1px solid #d9c8fb; border-radius: 8px; overflow: hidden; }
+.seg-btn { border: none; background: #fff; padding: 6px 12px; font-size: .85rem; cursor: pointer; color: var(--text); }
+.seg-btn + .seg-btn { border-left: 1px solid #d9c8fb; }
+.seg-btn.active { background: var(--primary-2); color: #fff; }
+.zt-info { background: var(--primary-soft); border: 1px solid #d9c8fb; border-radius: 8px; padding: 8px 12px; font-size: .9rem; margin-bottom: 10px; }
+.zt-info:empty { display: none; }
+.zt-info .zt-chip { display: inline-block; background: #2563eb; color: #fff; border-radius: 999px; padding: 0 8px; font-weight: 700; font-size: .82rem; margin-right: 4px; }
+.zt-wrap { max-height: 420px; overflow: auto; border: 1px solid #ece6fb; border-radius: 8px; }
+.ztable { border-collapse: collapse; width: 100%; font-family: Consolas, "Courier New", monospace; font-size: .82rem; }
+.ztable th, .ztable td { padding: 4px 6px; text-align: center; border-bottom: 1px solid #f3effb; white-space: nowrap; }
+.ztable thead th { position: sticky; top: 0; background: #ede9fe; color: #5b21b6; z-index: 2; }
+.ztable tbody th { position: sticky; left: 0; background: #f5f0ff; color: #5b21b6; z-index: 1; }
+.ztable thead th:first-child { left: 0; z-index: 3; }
+.ztable tbody tr:hover td { background: #faf7ff; }
+.ztable td:hover { outline: 2px solid #a78bfa; outline-offset: -2px; }
+.ztable tr.zt-sep th, .ztable tr.zt-sep td { border-top: 2px solid #c4b5fd; }
+.ztable td.cross, .ztable th.cross { background: #f3edff !important; }
+.ztable td.hit { background: #2563eb !important; color: #fff; font-weight: 700; border-radius: 4px; }
+@media print { .zt-wrap { max-height: none; overflow: visible; } .zt-controls { display: none; } }

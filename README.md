@@ -15,6 +15,7 @@ Incluye (en secciones desplegables):
 - Probabilidades relacionadas para los mismos valores.
 - Medidas de la distribución (media, mediana, moda, varianza, cuartiles, IQR…).
 - Cálculo paso a paso.
+- Tabla para estandarizar (normal estándar Z) que marca la fila y columna del z calculado.
 - Código R y fórmulas de Excel (español e inglés).
 - Sección de teoría: fórmulas, regla empírica, Teorema Central del Límite y normal estándar.
 

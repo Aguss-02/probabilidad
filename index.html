@@ -175,6 +175,29 @@
           </div>
         </details>
 
+        <details class="fold" data-fold="ztable">
+          <summary><span class="fold-icon">Z</span> Tabla para estandarizar (normal estándar Z)</summary>
+          <div class="fold-body">
+            <p class="muted small">Primero estandarizá con z = (x − μ) / σ. Después buscá la <b>fila</b> con el entero y el primer decimal de z, y la <b>columna</b> con el segundo decimal. La celda marcada corresponde a tu cálculo.</p>
+            <div class="zt-controls">
+              <div class="seg" role="group" aria-label="Parte de la tabla">
+                <button class="seg-btn" data-zview="neg">z negativos</button>
+                <button class="seg-btn" data-zview="pos">z positivos</button>
+                <button class="seg-btn" data-zview="all">Completa</button>
+              </div>
+              <label class="field inline">
+                <span>Valores</span>
+                <select id="ztType">
+                  <option value="cdf">Acumulada Φ(z) = P(Z ≤ z)</option>
+                  <option value="mean">Desde la media P(0 ≤ Z ≤ |z|)</option>
+                </select>
+              </label>
+            </div>
+            <div class="zt-info" id="ztInfo"></div>
+            <div class="zt-wrap" id="ztWrap"><table class="ztable" id="ztable"></table></div>
+          </div>
+        </details>
+
         <details class="fold" data-fold="code">
           <summary><span class="fold-icon">&lt;/&gt;</span> Código R y fórmulas de Excel</summary>
           <div class="fold-body">
