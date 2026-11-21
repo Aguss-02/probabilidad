@@ -3,23 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Calculadora de distribución normal | Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <title>Calculadora de Probabilidad y Estadística</title>
+  <link rel="stylesheet" href="css/styles.css?v=7">
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <h1>Calculadora de distribución normal</h1>
-      <p class="subtitle">Probabilidad y Estadística · X ~ N(μ, σ²)</p>
-      <nav class="top-nav">
-        <a href="#calculator">Calculadora</a>
-        <a href="#theory">Teoría</a>
+      <h1>Calculadora de Probabilidad y Estadística</h1>
+      <p class="subtitle" id="calcSubtitle">Distribución normal · X ~ N(μ, σ²)</p>
+      <nav class="calc-switch" role="tablist" aria-label="Elegir calculadora">
+        <button class="calc-tab active" role="tab" data-calc-tab="normal">
+          <span class="calc-tab-icon">∩</span>
+          <span><b>Distribución normal</b><small>Probabilidades, inversa, puntaje z</small></span>
+        </button>
+        <button class="calc-tab" role="tab" data-calc-tab="ci">
+          <span class="calc-tab-icon">[ ]</span>
+          <span><b>Intervalo de confianza</b><small>Media con σ conocida</small></span>
+        </button>
       </nav>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="card" id="calculator">
+    <section class="card" id="calculator" data-calc="normal">
       <!-- Tipo de cálculo -->
       <div class="group-title">Probabilidad a partir de un valor</div>
       <div class="mode-row">
@@ -211,7 +217,7 @@
     </section>
 
     <!-- Teoría -->
-    <details class="card theory fold-card" id="theory" data-fold="theory">
+    <details class="card theory fold-card" id="theory" data-fold="theory" data-calc="normal">
       <summary><h2 class="card-title">Teoría y ayuda: sobre esta calculadora</h2></summary>
       <p>Calculadora online y gratuita de la <b>distribución normal</b> (también llamada gaussiana o campana de Gauss). Calcula probabilidades, valores a partir de una probabilidad (normal inversa), la densidad y el puntaje z para cualquier normal N(μ, σ²). Además muestra un gráfico interactivo, el desarrollo paso a paso, la tabla Z y las fórmulas equivalentes de Excel.</p>
 
@@ -274,11 +280,181 @@
       <h3>La normal estándar</h3>
       <p>Es el caso particular con μ = 0 y σ = 1, y se la suele llamar Z. Si X ~ N(μ, σ²), el valor estandarizado z = (x − μ)/σ sigue una normal estándar. Así, cualquier probabilidad se calcula con una única tabla: P(X ≤ x) = Φ(z). La calculadora hace exactamente eso y lo muestra en el <b>cálculo paso a paso</b>.</p>
     </details>
+
+    <!-- ================= Intervalo de confianza ================= -->
+    <section class="card" id="ciCalc" data-calc="ci" hidden>
+      <h2 class="card-title">Intervalo de confianza para la media (σ conocida)</h2>
+      <p class="muted small">Calcula x̄ ± z<sub>α/2</sub> · σ/√n a partir del tamaño de la muestra, la media muestral, la desviación estándar y el nivel de confianza.</p>
+
+      <div class="inputs">
+        <label class="field">
+          <span>Tamaño de la muestra (n)</span>
+          <input type="number" id="ciN" value="60" step="1" min="1">
+        </label>
+        <label class="field">
+          <span>Media de la muestra (x̄)</span>
+          <input type="number" id="ciMean" value="998.6" step="any">
+        </label>
+        <label class="field">
+          <span>Desviación estándar (σ o s)</span>
+          <input type="number" id="ciSd" value="3.2" step="any" min="0">
+        </label>
+        <label class="field">
+          <span>Nivel de confianza (%)</span>
+          <input type="number" id="ciConf" value="95" step="any" min="0" max="100">
+        </label>
+      </div>
+
+      <div class="quick">
+        <span class="quick-title">Nivel:</span>
+        <button class="chip" data-ci-conf="90">90 %</button>
+        <button class="chip" data-ci-conf="95">95 %</button>
+        <button class="chip" data-ci-conf="98">98 %</button>
+        <button class="chip" data-ci-conf="99">99 %</button>
+      </div>
+
+      <details class="more">
+        <summary><span class="icon">⚙</span> Más opciones</summary>
+        <div class="more-body">
+          <label class="field inline">
+            <span>Decimales</span>
+            <select id="ciDecimals">
+              <option>2</option><option>3</option><option selected>4</option>
+              <option>5</option><option>6</option><option>8</option>
+            </select>
+          </label>
+          <label class="field inline">
+            <span>La desviación es</span>
+            <select id="ciSdType">
+              <option value="pop">σ poblacional (conocida)</option>
+              <option value="sample">s muestral</option>
+            </select>
+          </label>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button class="btn primary" id="ciCalcBtn">Calcular</button>
+        <button class="btn" id="ciClearBtn">Limpiar</button>
+        <button class="btn" id="ciExampleBtn">Ejemplo</button>
+      </div>
+
+      <div class="error" id="ciError" hidden></div>
+
+      <div class="result-card" id="ciResult" hidden>
+        <h2 class="section-title">Resultado</h2>
+        <div class="result-box">
+          <div class="result-main" id="ciMain"></div>
+          <div class="result-pct" id="ciPm"></div>
+          <div class="result-sub" id="ciSub"></div>
+        </div>
+        <div class="warn" id="ciWarn" hidden></div>
+
+        <p class="explanation" id="ciExplanation"></p>
+
+        <div class="fold-bar">
+          <span class="muted small">Más detalles</span>
+          <button class="link-btn" id="ciExpandAll">Abrir todo</button>
+          <button class="link-btn" id="ciCollapseAll">Cerrar todo</button>
+        </div>
+
+        <details class="fold" data-fold="ciChart">
+          <summary><span class="fold-icon">📈</span> Gráfico del intervalo</summary>
+          <div class="fold-body">
+            <div class="chart-box">
+              <svg id="ciChart" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Distribución muestral de la media"></svg>
+            </div>
+            <p class="hint">Curva de la distribución muestral de x̄: N(x̄, σ²/n). La zona sombreada es el nivel de confianza.</p>
+          </div>
+        </details>
+
+        <details class="fold" data-fold="ciMeasures">
+          <summary><span class="fold-icon">σ</span> Resumen de valores</summary>
+          <div class="fold-body"><table class="measures" id="ciMeasures"></table></div>
+        </details>
+
+        <details class="fold" data-fold="ciLevels">
+          <summary><span class="fold-icon">≈</span> El mismo intervalo con otros niveles de confianza</summary>
+          <div class="fold-body">
+            <p class="muted small">A mayor confianza, mayor z<sub>α/2</sub> y por lo tanto un intervalo más ancho.</p>
+            <div class="table-wrap"><table class="calc-table ci-levels" id="ciLevels"></table></div>
+          </div>
+        </details>
+
+        <details class="fold" data-fold="ciSize">
+          <summary><span class="fold-icon">n</span> ¿Qué tamaño de muestra necesito?</summary>
+          <div class="fold-body">
+            <p class="muted small">Para lograr un margen de error E con el mismo σ y nivel de confianza: n = (z<sub>α/2</sub> · σ / E)², redondeado hacia arriba.</p>
+            <div class="inputs ci-size-inputs">
+              <label class="field"><span>Margen de error deseado (E)</span><input type="number" id="ciE" step="any" min="0"></label>
+            </div>
+            <div class="zt-info" id="ciSizeOut"></div>
+          </div>
+        </details>
+
+        <details class="fold" data-fold="ciSteps">
+          <summary><span class="fold-icon"><i>ƒ</i></span> Cálculo paso a paso</summary>
+          <div class="fold-body"><ol id="ciSteps"></ol></div>
+        </details>
+
+        <details class="fold" data-fold="ciExcel">
+          <summary><span class="fold-icon">⊞</span> Fórmulas de Excel</summary>
+          <div class="fold-body">
+            <h3 class="code-title">Excel (español)</h3>
+            <div class="code"><pre id="ciExcelEs"></pre><button class="copy" data-copy="ciExcelEs">Copiar</button></div>
+            <h3 class="code-title">Excel (inglés)</h3>
+            <div class="code"><pre id="ciExcelEn"></pre><button class="copy" data-copy="ciExcelEn">Copiar</button></div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <details class="card theory fold-card" id="ciTheory" data-fold="ciTheory" data-calc="ci" hidden>
+      <summary><h2 class="card-title">Teoría y ayuda: intervalo de confianza</h2></summary>
+      <p>Un <b>intervalo de confianza</b> es un rango de valores, calculado a partir de una muestra, que con cierta confianza contiene al verdadero valor de la media poblacional μ. Cuando la desviación estándar de la población σ es conocida (o la muestra es grande), se usa la distribución normal.</p>
+
+      <h3>Fórmula</h3>
+      <div class="formulas">
+        <div class="formula">
+          <div class="formula-name">Intervalo de confianza</div>
+          <div class="math">x̄ ± z<sub>α/2</sub> · <span class="frac"><span>σ</span><span>√n</span></span></div>
+        </div>
+        <div class="formula">
+          <div class="formula-name">Margen de error</div>
+          <div class="math">E = z<sub>α/2</sub> · <span class="frac"><span>σ</span><span>√n</span></span></div>
+        </div>
+        <div class="formula">
+          <div class="formula-name">Tamaño de muestra</div>
+          <div class="math">n = <span class="frac"><span>(z<sub>α/2</sub> · σ)²</span><span>E²</span></span></div>
+        </div>
+      </div>
+
+      <h3>Valores críticos más usados</h3>
+      <div class="empirical">
+        <div class="emp-item"><div class="emp-pct">1,645</div><div>confianza 90 % (α = 0,10)</div></div>
+        <div class="emp-item"><div class="emp-pct">1,960</div><div>confianza 95 % (α = 0,05)</div></div>
+        <div class="emp-item"><div class="emp-pct">2,576</div><div>confianza 99 % (α = 0,01)</div></div>
+      </div>
+
+      <h3>Cómo usarla</h3>
+      <ol class="howto">
+        <li><span>1</span><div>Ingresá el tamaño de la muestra <b>n</b>, la media muestral <b>x̄</b> y la desviación estándar.</div></li>
+        <li><span>2</span><div>Elegí el nivel de confianza (o tocá 90 %, 95 %, 98 % o 99 %).</div></li>
+        <li><span>3</span><div>Leé el intervalo [límite inferior, límite superior] y el margen de error. Abrí las secciones de abajo para ver el gráfico, el paso a paso y las fórmulas de Excel.</div></li>
+      </ol>
+
+      <h3>¿Cómo se interpreta?</h3>
+      <p>Un intervalo del 95 % <b>no</b> significa que μ tenga un 95 % de probabilidad de estar en ese intervalo puntual. Significa que, si repitiéramos el muestreo muchas veces y calculáramos un intervalo con cada muestra, aproximadamente el 95 % de esos intervalos contendría a μ.</p>
+
+      <h3>¿σ o s?</h3>
+      <p>Esta calculadora usa z (normal estándar), que es lo correcto cuando σ es la desviación <b>poblacional</b> conocida. Si solo tenés la desviación <b>muestral</b> s, con muestras grandes (n ≥ 30) la aproximación con z es razonable; con muestras chicas conviene usar la distribución t de Student.</p>
+    </details>
   </main>
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/normal.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/normal.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
+  <script src="js/ci.js?v=7"></script>
 </body>
 </html>

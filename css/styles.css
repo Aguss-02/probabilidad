@@ -224,3 +224,22 @@ details.fold-card[open] > summary { margin-bottom: 10px; }
 .ztable td.cross, .ztable th.cross { background: #f3edff !important; }
 .ztable td.hit { background: #2563eb !important; color: #fff; font-weight: 700; border-radius: 4px; }
 @media print { .zt-wrap { max-height: none; overflow: visible; } .zt-controls { display: none; } }
+
+/* ---------- selector de calculadora ---------- */
+.calc-switch { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }
+.calc-tab { display: flex; align-items: center; gap: 12px; text-align: left; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .14); color: #fff; cursor: pointer; font: inherit; transition: background .15s, transform .15s; }
+.calc-tab:hover { background: rgba(255, 255, 255, .26); }
+.calc-tab b { display: block; font-size: 1rem; }
+.calc-tab small { display: block; opacity: .85; font-size: .8rem; }
+.calc-tab.active { background: #fff; color: #4c1d95; border-color: #fff; box-shadow: 0 6px 18px rgba(76, 29, 149, .25); }
+.calc-tab-icon { display: grid; place-items: center; min-width: 38px; height: 38px; border-radius: 10px; background: rgba(255, 255, 255, .2); font-weight: 800; font-family: "Cambria Math", serif; font-size: 1.1rem; }
+.calc-tab.active .calc-tab-icon { background: #ede9fe; color: #6d28d9; }
+[data-calc][hidden] { display: none !important; }
+
+/* ---------- intervalo de confianza ---------- */
+.warn { margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: .9rem; }
+.ci-levels td, .ci-levels th { text-align: center; }
+.ci-levels td:last-child { font-style: normal; color: var(--text); }
+.ci-levels tr.current td { background: var(--primary-soft); font-weight: 700; color: #5b21b6; }
+.ci-size-inputs { margin-top: 6px; margin-bottom: 10px; max-width: 320px; }
+@media print { .calc-switch, #ciTheory { display: none !important; } }

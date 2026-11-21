@@ -25,5 +25,15 @@ Incluye (en secciones desplegables):
 index.html
 css/styles.css
 js/normal.js   # funciones matemáticas (Φ, φ, Φ⁻¹)
-js/app.js      # interfaz y gráfico
+js/app.js      # calculadora de distribución normal
+js/ci.js       # intervalo de confianza y selector de calculadora
 ```
+
+## Intervalo de confianza para la media (σ conocida)
+
+Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#intervalo` al final de la URL).
+
+- Datos: tamaño de la muestra n, media muestral x̄, desviación estándar (σ o s) y nivel de confianza.
+- Resultado: intervalo x̄ ± z·σ/√n, margen de error, valor crítico z y error estándar.
+- Secciones desplegables: gráfico de la distribución muestral, resumen de valores, el mismo intervalo con otros niveles de confianza, tamaño de muestra necesario para un margen de error, cálculo paso a paso y fórmulas de Excel (`INTERVALO.CONFIANZA.NORM` / `CONFIDENCE.NORM`).
+- Si se usa la desviación muestral s con n < 30, avisa que conviene usar la t de Student.
