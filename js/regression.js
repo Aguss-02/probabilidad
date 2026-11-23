@@ -114,18 +114,10 @@
     if (c.pred) p.push(`<b>Predicción:</b> para ${xS} = ${fmt(c.pred.x0)}, se estima ${yS} = a·x + b = ${substLine(c, c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>.`);
     $('rExplanation').innerHTML = p.map((t) => `<p>${t}</p>`).join('');
 
-    renderTable(c);
     renderMeasures(c);
     renderSteps(c);
     renderExcel(c);
     drawChart(c, xn, yn);
-  }
-
-  function renderTable(c) {
-    let html = '<thead><tr><th>#</th><th>x</th><th>y</th><th>ŷ = ax + b (estimado)</th><th>Residuo e = y − ŷ</th><th>e²</th></tr></thead><tbody>';
-    c.rows.forEach((o, i) => { html += `<tr><td>${i + 1}</td><td>${fmt(o.x)}</td><td>${fmt(o.y)}</td><td>${fmt(o.yh)}</td><td>${fmt(o.e)}</td><td>${fmt(o.e * o.e)}</td></tr>`; });
-    html += `<tr class="current"><td>Σ</td><td>${fmt(c.sx)}</td><td>${fmt(c.sy)}</td><td>${fmt(c.rows.reduce((s, o) => s + o.yh, 0))}</td><td>${fmt(c.rows.reduce((s, o) => s + o.e, 0))}</td><td>${fmt(c.SSE)}</td></tr></tbody>`;
-    $('rTable').innerHTML = html;
   }
 
   function renderMeasures(c) {

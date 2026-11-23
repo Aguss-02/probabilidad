@@ -59,4 +59,4 @@ Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#interva
 
 - Datos pegados desde Excel (tabulación, punto y coma, espacio o coma; acepta coma decimal y encabezado).
 - Recta de mínimos cuadrados en la forma y = ax + b (a = pendiente, b = ordenada), r, R², interpretación, predicción con aviso de extrapolación.
-- Gráfico de dispersión con recta y residuos, tabla de residuos, sumas, paso a paso y Excel.
+- Gráfico de dispersión con recta y residuos, sumas, paso a paso y Excel.
