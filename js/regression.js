@@ -70,9 +70,12 @@
     };
   }
 
-  function equation(b0, b1, xName = 'x') {
-    return `ŷ = ${fmt(b0)} ${b1 < 0 ? '−' : '+'} ${fmt(Math.abs(b1))}·${xName}`;
+  /** Recta en la forma y = ax + b (a = pendiente, b = ordenada al origen). */
+  function equation(b, a, xName = 'x') {
+    return `y = ${fmt(a)}${xName} ${b < 0 ? '−' : '+'} ${fmt(Math.abs(b))}`;
   }
+  /** a · x + b con los números reemplazados. */
+  const substLine = (c, x) => `${fmt(c.b1)} · ${fmt(x)} ${c.b0 < 0 ? '−' : '+'} ${fmt(Math.abs(c.b0))}`;
 
   /* ---------------------------------------------------------- render */
   function render(c) {
@@ -84,7 +87,7 @@
       ['r', Number.isFinite(c.r) ? fmt(c.r) : 'indefinido'],
       ['R²', Number.isFinite(c.R2) ? fmt(c.R2) : 'indefinido'],
       ['n', c.n],
-      ...(c.pred ? [[`ŷ(${fmt(c.pred.x0)})`, fmt(c.pred.y0)]] : []),
+      ...(c.pred ? [[`y(${fmt(c.pred.x0)})`, fmt(c.pred.y0)]] : []),
     ].map(([k, v]) => `<span class="stat-chip"><small>${k}</small><b>${v}</b></span>`).join('');
     $('rSub').textContent = Number.isFinite(c.r)
       ? `Correlación ${c.r >= 0 ? 'positiva' : 'negativa'} ${strength(c.r)} · error estándar de la estimación = ${Number.isFinite(c.se) ? fmt(c.se) : '—'}`
@@ -101,14 +104,14 @@
     // interpretación
     const dir = c.b1 >= 0 ? 'aumenta' : 'disminuye';
     const p = [];
-    p.push(`<b>Pendiente:</b> por cada unidad que aumenta ${xS}, ${yS} ${dir} en promedio ${fmt(Math.abs(c.b1))} unidades.`);
-    p.push(`<b>Ordenada al origen:</b> cuando ${xS} = 0, el valor estimado de ${yS} es ${fmt(c.b0)}` +
+    p.push(`<b>Pendiente (a = ${fmt(c.b1)}):</b> por cada unidad que aumenta ${xS}, ${yS} ${dir} en promedio ${fmt(Math.abs(c.b1))} unidades.`);
+    p.push(`<b>Ordenada al origen (b = ${fmt(c.b0)}):</b> cuando ${xS} = 0, el valor estimado de ${yS} es ${fmt(c.b0)}` +
       (c.xmin > 0 || c.xmax < 0 ? ' (ojo: x = 0 está fuera del rango de los datos, así que este valor no tiene una interpretación práctica clara).' : '.'));
     if (Number.isFinite(c.r)) {
       p.push(`<b>Correlación:</b> r = ${fmt(c.r)} indica una relación lineal ${c.r >= 0 ? 'positiva' : 'negativa'} ${strength(c.r)} entre ${xS} y ${yS}.`);
       p.push(`<b>Determinación:</b> R² = ${fmt(c.R2)}, es decir, el ${fmt(c.R2 * 100, 2)} % de la variabilidad de ${yS} se explica por su relación lineal con ${xS}.`);
     }
-    if (c.pred) p.push(`<b>Predicción:</b> para ${xS} = ${fmt(c.pred.x0)}, se estima ${yS} = ${fmt(c.b0)} ${c.b1 < 0 ? '−' : '+'} ${fmt(Math.abs(c.b1))} · ${fmt(c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>.`);
+    if (c.pred) p.push(`<b>Predicción:</b> para ${xS} = ${fmt(c.pred.x0)}, se estima ${yS} = a·x + b = ${substLine(c, c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>.`);
     $('rExplanation').innerHTML = p.map((t) => `<p>${t}</p>`).join('');
 
     renderTable(c);
@@ -119,7 +122,7 @@
   }
 
   function renderTable(c) {
-    let html = '<thead><tr><th>#</th><th>x</th><th>y</th><th>ŷ = b₀ + b₁x</th><th>Residuo e = y − ŷ</th><th>e²</th></tr></thead><tbody>';
+    let html = '<thead><tr><th>#</th><th>x</th><th>y</th><th>ŷ = ax + b (estimado)</th><th>Residuo e = y − ŷ</th><th>e²</th></tr></thead><tbody>';
     c.rows.forEach((o, i) => { html += `<tr><td>${i + 1}</td><td>${fmt(o.x)}</td><td>${fmt(o.y)}</td><td>${fmt(o.yh)}</td><td>${fmt(o.e)}</td><td>${fmt(o.e * o.e)}</td></tr>`; });
     html += `<tr class="current"><td>Σ</td><td>${fmt(c.sx)}</td><td>${fmt(c.sy)}</td><td>${fmt(c.rows.reduce((s, o) => s + o.yh, 0))}</td><td>${fmt(c.rows.reduce((s, o) => s + o.e, 0))}</td><td>${fmt(c.SSE)}</td></tr></tbody>`;
     $('rTable').innerHTML = html;
@@ -131,7 +134,7 @@
       ['Media de x (x̄)', fmt(c.mx)], ['Media de y (ȳ)', fmt(c.my)],
       ['S<sub>xx</sub> = Σ(x − x̄)²', fmt(c.Sxx)], ['S<sub>yy</sub> = Σ(y − ȳ)²', fmt(c.Syy)], ['S<sub>xy</sub> = Σ(x − x̄)(y − ȳ)', fmt(c.Sxy)],
       ['Desvío estándar de x (s<sub>x</sub>)', fmt(c.sdx)], ['Desvío estándar de y (s<sub>y</sub>)', fmt(c.sdy)], ['Covarianza muestral', fmt(c.cov)],
-      ['Pendiente (b₁)', fmt(c.b1)], ['Ordenada al origen (b₀)', fmt(c.b0)],
+      ['Pendiente (a)', fmt(c.b1)], ['Ordenada al origen (b)', fmt(c.b0)],
       ['Coeficiente de correlación (r)', Number.isFinite(c.r) ? fmt(c.r) : 'indefinido'], ['Coeficiente de determinación (R²)', Number.isFinite(c.R2) ? fmt(c.R2) : 'indefinido'],
       ['Suma de cuadrados total SST', fmt(c.SST)], ['Suma de cuadrados de la regresión SSR', fmt(c.SSR)], ['Suma de cuadrados del error SSE', fmt(c.SSE)],
       ['Error estándar de la estimación s<sub>e</sub> = √(SSE/(n − 2))', Number.isFinite(c.se) ? fmt(c.se) : '—'],
@@ -145,15 +148,15 @@
       `S<sub>xx</sub> = Σx² − (Σx)²/n = ${fmt(c.sxx)} − ${fmt(c.sx)}²/${c.n} = ${fmt(c.Sxx)}`,
       `S<sub>yy</sub> = Σy² − (Σy)²/n = ${fmt(c.syy)} − ${fmt(c.sy)}²/${c.n} = ${fmt(c.Syy)}`,
       `S<sub>xy</sub> = Σxy − (Σx)(Σy)/n = ${fmt(c.sxy)} − ${fmt(c.sx)} · ${fmt(c.sy)}/${c.n} = ${fmt(c.Sxy)}`,
-      `Pendiente: b₁ = S<sub>xy</sub>/S<sub>xx</sub> = ${fmt(c.Sxy)}/${fmt(c.Sxx)} = <b>${fmt(c.b1)}</b>`,
-      `Ordenada: b₀ = ȳ − b₁·x̄ = ${fmt(c.my)} − (${fmt(c.b1)}) · ${fmt(c.mx)} = <b>${fmt(c.b0)}</b>`,
-      `Recta de regresión: <b>${equation(c.b0, c.b1)}</b>`,
+      `Pendiente: a = S<sub>xy</sub>/S<sub>xx</sub> = ${fmt(c.Sxy)}/${fmt(c.Sxx)} = <b>${fmt(c.b1)}</b>`,
+      `Ordenada al origen: b = ȳ − a·x̄ = ${fmt(c.my)} − (${fmt(c.b1)}) · ${fmt(c.mx)} = <b>${fmt(c.b0)}</b>`,
+      `Recta de regresión (y = ax + b): <b>${equation(c.b0, c.b1)}</b>`,
     ];
     if (Number.isFinite(c.r)) {
       s.push(`Correlación: r = S<sub>xy</sub>/√(S<sub>xx</sub>·S<sub>yy</sub>) = ${fmt(c.Sxy)}/√(${fmt(c.Sxx)} · ${fmt(c.Syy)}) = <b>${fmt(c.r)}</b>`);
       s.push(`Determinación: R² = r² = ${fmt(c.r)}² = <b>${fmt(c.R2)}</b>`);
     }
-    if (c.pred) s.push(`Predicción: ŷ = ${fmt(c.b0)} ${c.b1 < 0 ? '−' : '+'} ${fmt(Math.abs(c.b1))} · ${fmt(c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>`);
+    if (c.pred) s.push(`Predicción: y = a·x + b = ${substLine(c, c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>`);
     $('rSteps').innerHTML = s.map((t) => `<li>${t}</li>`).join('');
   }
 
@@ -163,16 +166,16 @@
     const x0 = c.pred ? String(c.pred.x0) : 'x';
     $('rExcelNote').textContent = `Suponiendo que los valores de X están en ${X} y los de Y en ${Y} (con encabezados en la fila 1).`;
     $('rExcelEs').textContent = [
-      `Pendiente (b₁):     =PENDIENTE(${Y}; ${X})`,
-      `Ordenada (b₀):      =INTERSECCION.EJE(${Y}; ${X})`,
+      `Pendiente (a):      =PENDIENTE(${Y}; ${X})`,
+      `Ordenada (b):       =INTERSECCION.EJE(${Y}; ${X})`,
       `Correlación (r):    =COEF.DE.CORREL(${X}; ${Y})`,
       `R²:                 =COEFICIENTE.R2(${Y}; ${X})`,
       `Predicción:         =PRONOSTICO.LINEAL(${x0}; ${Y}; ${X})`,
       `Error estándar:     =ERROR.TIPICO.XY(${Y}; ${X})`,
     ].join('\n');
     $('rExcelEn').textContent = [
-      `Slope (b₁):         =SLOPE(${Y}, ${X})`,
-      `Intercept (b₀):     =INTERCEPT(${Y}, ${X})`,
+      `Slope (a):          =SLOPE(${Y}, ${X})`,
+      `Intercept (b):      =INTERCEPT(${Y}, ${X})`,
       `Correlation (r):    =CORREL(${X}, ${Y})`,
       `R²:                 =RSQ(${Y}, ${X})`,
       `Prediction:         =FORECAST.LINEAR(${x0}, ${Y}, ${X})`,
@@ -227,18 +230,18 @@
       const px = X(c.pred.x0), py = Y(c.pred.y0);
       s += `<line x1="${px}" y1="${base}" x2="${px}" y2="${py}" stroke="#2563eb" stroke-dasharray="4,3"/><line x1="${L}" y1="${py}" x2="${px}" y2="${py}" stroke="#2563eb" stroke-dasharray="4,3"/>`;
       s += `<path d="M${px},${py - 9} L${px + 9},${py} L${px},${py + 9} L${px - 9},${py} Z" fill="#2563eb" stroke="#fff" stroke-width="1.5"><title>Predicción: x = ${fmt(c.pred.x0)} → ŷ = ${fmt(c.pred.y0)}</title></path>`;
-      const txt = `ŷ(${fmt(c.pred.x0)}) = ${fmt(c.pred.y0)}`;
+      const txt = `y(${fmt(c.pred.x0)}) = ${fmt(c.pred.y0)}`;
       const tw = txt.length * 7.4 + 16;
       const tx = Math.min(Math.max(px + 14, L + 4), W - R - tw - 4);
       s += `<rect x="${tx}" y="${py + 12}" width="${tw}" height="22" rx="11" fill="#2563eb"/><text x="${tx + tw / 2}" y="${py + 27}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff" ${font}>${txt}</text>`;
     }
     // recuadro con la ecuación
     const eq = equation(c.b0, c.b1);
-    const lines = [eq, Number.isFinite(c.r) ? `r = ${fmt(c.r)}   R² = ${fmt(c.R2)}` : 'r indefinido'];
+    const lines = [eq, `a = ${fmt(c.b1)}   b = ${fmt(c.b0)}`, Number.isFinite(c.r) ? `r = ${fmt(c.r)}   R² = ${fmt(c.R2)}` : 'r indefinido'];
     const bw = Math.max(...lines.map((l) => l.length)) * 7.6 + 20;
     const bx = c.b1 >= 0 ? L + 10 : W - R - bw - 10;
-    s += `<rect x="${bx}" y="${T + 10}" width="${bw}" height="48" rx="8" fill="#fff" fill-opacity=".92" stroke="#d9c8fb"/>`;
-    s += `<text x="${bx + 10}" y="${T + 30}" font-size="13.5" font-weight="700" fill="#5b21b6" ${font}>${lines[0]}</text><text x="${bx + 10}" y="${T + 49}" font-size="12.5" fill="#374151" ${font}>${lines[1]}</text>`;
+    s += `<rect x="${bx}" y="${T + 10}" width="${bw}" height="68" rx="8" fill="#fff" fill-opacity=".92" stroke="#d9c8fb"/>`;
+    s += `<text x="${bx + 10}" y="${T + 30}" font-size="13.5" font-weight="700" fill="#5b21b6" ${font}>${lines[0]}</text><text x="${bx + 10}" y="${T + 49}" font-size="12.5" fill="#374151" ${font}>${lines[1]}</text><text x="${bx + 10}" y="${T + 67}" font-size="12.5" fill="#374151" ${font}>${lines[2]}</text>`;
     const svg = $('rChart');
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     svg.innerHTML = s;

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=14">
+  <link rel="stylesheet" href="css/styles.css?v=16">
 </head>
 <body>
   <header class="site-header">
@@ -832,15 +832,20 @@
 
     <details class="card theory fold-card" id="regTheory" data-fold="regTheory" data-calc="reg" hidden>
       <summary><h2 class="card-title">Teoría y ayuda: regresión lineal</h2></summary>
-      <p>La <b>regresión lineal simple</b> busca la recta ŷ = b₀ + b₁x que mejor se ajusta a los datos, en el sentido de <b>mínimos cuadrados</b>: la que hace mínima la suma de los residuos al cuadrado Σ(y − ŷ)².</p>
+      <p>La <b>regresión lineal simple</b> busca la recta <b>y = ax + b</b> que mejor se ajusta a los datos, donde <b>a</b> es la <b>pendiente</b> y <b>b</b> la <b>ordenada al origen</b>. "Mejor" significa en el sentido de <b>mínimos cuadrados</b>: la recta que hace mínima la suma de los residuos al cuadrado Σ(y − ŷ)², siendo ŷ el valor que estima la recta para cada x.</p>
+      <p class="muted small">En muchos libros la misma recta se escribe ŷ = b₀ + b₁x: b₁ es la pendiente (nuestra a) y b₀ la ordenada (nuestra b).</p>
       <div class="formulas">
         <div class="formula">
-          <div class="formula-name">Pendiente</div>
-          <div class="math">b₁ = <span class="frac"><span>S<sub>xy</sub></span><span>S<sub>xx</sub></span></span></div>
+          <div class="formula-name">Recta (función lineal)</div>
+          <div class="math">y = a·x + b</div>
         </div>
         <div class="formula">
-          <div class="formula-name">Ordenada al origen</div>
-          <div class="math">b₀ = ȳ − b₁ x̄</div>
+          <div class="formula-name">Pendiente (<span class="var">a</span>)</div>
+          <div class="math">a = <span class="frac"><span>S<sub>xy</sub></span><span>S<sub>xx</sub></span></span></div>
+        </div>
+        <div class="formula">
+          <div class="formula-name">Ordenada al origen (<span class="var">b</span>)</div>
+          <div class="math">b = ȳ − a · x̄</div>
         </div>
         <div class="formula">
           <div class="formula-name">Coeficiente de correlación</div>
@@ -857,8 +862,8 @@
       </div>
       <h3>¿Cómo se interpretan?</h3>
       <ul>
-        <li><b>b₁ (pendiente):</b> cuánto cambia en promedio Y cuando X aumenta en una unidad.</li>
-        <li><b>b₀ (ordenada):</b> el valor estimado de Y cuando X = 0. Solo tiene sentido si X = 0 está dentro del rango de los datos.</li>
+        <li><b>a (pendiente):</b> cuánto cambia en promedio Y cuando X aumenta en una unidad. Si a &gt; 0 la recta sube; si a &lt; 0, baja.</li>
+        <li><b>b (ordenada al origen):</b> el valor de Y donde la recta corta al eje vertical, es decir, cuando X = 0. Solo tiene sentido práctico si X = 0 está dentro del rango de los datos.</li>
         <li><b>r:</b> mide la fuerza y el sentido de la relación <i>lineal</i>, entre −1 y 1. Cerca de ±1 es fuerte; cerca de 0, débil o inexistente.</li>
         <li><b>R² = r²:</b> proporción de la variabilidad de Y explicada por la recta. Por ejemplo R² = 0,85 indica que el 85 % de la variación de Y se explica por X.</li>
       </ul>
@@ -885,13 +890,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=14"></script>
-  <script src="js/normal.js?v=14"></script>
-  <script src="js/app.js?v=14"></script>
-  <script src="js/ci.js?v=14"></script>
-  <script src="js/discrete.js?v=14"></script>
-  <script src="js/uniform.js?v=14"></script>
-  <script src="js/regression.js?v=14"></script>
-  <script src="js/switcher.js?v=14"></script>
+  <script src="js/common.js?v=16"></script>
+  <script src="js/normal.js?v=16"></script>
+  <script src="js/app.js?v=16"></script>
+  <script src="js/ci.js?v=16"></script>
+  <script src="js/discrete.js?v=16"></script>
+  <script src="js/uniform.js?v=16"></script>
+  <script src="js/regression.js?v=16"></script>
+  <script src="js/switcher.js?v=16"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
     ci: { hash: '#intervalo', subtitle: 'Intervalo de confianza para la media · x̄ ± z·σ/√n' },
     disc: { hash: '#discreta', subtitle: 'Distribuciones discretas · binomial, Poisson e hipergeométrica' },
     unif: { hash: '#uniforme', subtitle: 'Distribución uniforme · X ~ U(a, b)' },
-    reg: { hash: '#regresion', subtitle: 'Regresión lineal simple · ŷ = b₀ + b₁x' },
+    reg: { hash: '#regresion', subtitle: 'Regresión lineal simple · y = ax + b' },
   };
 
   function calcFromHash() {
