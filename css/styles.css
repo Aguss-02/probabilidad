@@ -291,3 +291,42 @@ ul.checks li::before { content: "✓"; position: absolute; left: 4px; color: #16
 .calc-tab-icon svg { display: block; }
 .math.math-lines { display: block; font-size: 1.05rem; line-height: 1.7; }
 .formula-name .var { text-transform: none; font-family: "Cambria Math", "Times New Roman", serif; font-size: .95rem; }
+
+/* ---------- fórmulas (MathML, estilo libro) ---------- */
+math { font-family: "Latin Modern Math", "STIX Two Math", "Cambria Math", "Times New Roman", serif; }
+.math math[display="block"] { font-size: 1.3em; margin: 4px 0; }
+.math.math-lines math[display="block"] { font-size: 1.15em; margin: 2px 0; text-align: left; }
+.calc-table math { font-size: 1.1em; }
+.formula-card { margin-top: 12px; padding: 16px 20px; border: 1px solid #e5e0f5; border-radius: 12px; background: #fff; }
+.fc-title { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.fc-formula math { font-size: 1.6em; margin: 10px 0 14px; }
+.fc-where { font-family: "Latin Modern Roman", "Times New Roman", serif; font-size: 1.05rem; margin-bottom: 6px; }
+.fc-legend { display: grid; grid-template-columns: max-content auto 1fr; column-gap: 10px; row-gap: 8px; align-items: center; padding-left: 28px; font-family: "Latin Modern Roman", "Times New Roman", serif; font-size: 1.05rem; }
+.fc-legend .lg-sym { text-align: right; }
+.fc-legend .lg-sym math { font-size: 1.15em; }
+.fc-legend .lg-txt math { font-size: 1.15em; }
+.fc-moments { margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e5e0f5; display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: center; }
+.fc-moments math { font-size: 1.15em; }
+@media (max-width: 560px) { .fc-legend { padding-left: 0; } .fc-formula math { font-size: 1.3em; } }
+
+/* Fuente matemática incluida (STIX Two Math, licencia OFL) para que las fórmulas se vean igual en todos los dispositivos */
+@font-face { font-family: "STIX Two Math"; src: url("../fonts/STIXTwoMath-Regular.woff2") format("woff2"); font-display: swap; }
+math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif; }
+.fc-legend math, .fc-moments math, .calc-table math, .fc-legend .lg-txt math { math-style: normal; }
+.fc-where, .fc-legend { font-family: "STIX Two Text", "Times New Roman", serif; }
+.formula { min-width: 0; }
+.formula .math { overflow-x: auto; overflow-y: hidden; }
+.math math[display="block"] { font-size: 1.2em; }
+.math.math-lines { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.math.math-lines math { font-size: 1.15em; math-style: normal; }
+.math.tight math[display="block"] { font-size: 1.02em; }
+.formula .math > .muted { font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; font-size: .8rem; margin-top: 2px; }
+.formula .math { flex-direction: column; align-items: flex-start; }
+.fc-moments { overflow-x: auto; }
+.fc-moments math { max-width: 100%; }
+@media (max-width: 560px) {
+  .formula-card { padding: 14px; }
+  .fc-moments math, .fc-legend .lg-sym math { font-size: 1em; }
+  .fc-legend { font-size: .95rem; column-gap: 6px; }
+}
+@media (max-width: 560px) { .fc-formula math { font-size: 1.05em; } .fc-formula { overflow-x: auto; } }

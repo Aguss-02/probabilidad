@@ -125,10 +125,31 @@
     img.src = url;
   }
 
+  /* Constructor mínimo de fórmulas en MathML (las dibuja el navegador, estilo libro). */
+  const M = {
+    i: (x) => `<mi>${x}</mi>`,
+    n: (x) => `<mn>${x}</mn>`,
+    o: (x) => `<mo>${x}</mo>`,
+    t: (x) => `<mtext>${x}</mtext>`,
+    row: (...a) => `<mrow>${a.join('')}</mrow>`,
+    frac: (a, b) => `<mfrac>${a}${b}</mfrac>`,
+    sup: (a, b) => `<msup>${a}${b}</msup>`,
+    sub: (a, b) => `<msub>${a}${b}</msub>`,
+    sqrt: (a) => `<msqrt>${a}</msqrt>`,
+    // los paréntesis solo se estiran si rodean una fracción o una raíz (si no, quedan con su espacio normal)
+    paren: (...a) => {
+      const c = a.join('');
+      const st = /<mfrac|<msqrt/.test(c) ? '' : ' stretchy="false"';
+      return `<mrow><mo${st} lspace="0" rspace="0">(</mo>${c}<mo${st} lspace="0" rspace="0">)</mo></mrow>`;
+    },
+    binom: (a, b) => `<mrow><mo lspace="0" rspace="0">(</mo><mfrac linethickness="0">${a}${b}</mfrac><mo lspace="0" rspace="0">)</mo></mrow>`,
+    math: (c, block = false) => `<math${block ? ' display="block"' : ''}>${c}</math>`,
+  };
+
   // todos los botones "Guardar PNG": data-png = id del SVG, data-png-name = nombre del archivo
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-png]').forEach((b) => b.addEventListener('click', () => savePng(b.dataset.png, b.dataset.pngName || 'grafico.png')));
   });
 
-  global.Calc = { $, fmt, readNum, niceTicks, lnGamma, lnFact, lnChoose, choose, wireFoldButtons, showError, savePng };
+  global.Calc = { $, fmt, readNum, niceTicks, lnGamma, lnFact, lnChoose, choose, wireFoldButtons, showError, savePng, M };
 })(window);

@@ -32,6 +32,7 @@ js/discrete.js    # distribuciones discretas
 js/uniform.js     # distribución uniforme
 js/regression.js  # regresión lineal
 js/switcher.js    # selector de calculadora
+fonts/            # fuente matemática STIX Two Math (licencia SIL OFL 1.1)
 ```
 
 ## Intervalo de confianza para la media (σ conocida)
@@ -60,3 +61,7 @@ Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#interva
 - Datos pegados desde Excel (tabulación, punto y coma, espacio o coma; acepta coma decimal y encabezado).
 - Recta de mínimos cuadrados en la forma y = ax + b (a = pendiente, b = ordenada), r, R², interpretación, predicción con aviso de extrapolación.
 - Gráfico de dispersión con recta y residuos, sumas, paso a paso y Excel.
+
+## Fórmulas
+
+Las fórmulas se escriben en MathML (el navegador las dibuja con fracciones, números combinatorios y exponentes como en un libro) y usan la fuente **STIX Two Math**, incluida en `fonts/` bajo la licencia SIL Open Font License 1.1 (`fonts/STIXTwoMath-LICENSE.txt`).

@@ -18,7 +18,6 @@
       params: ['n', 'p'],
       nLabel: 'Número de ensayos (n)',
       notation: (P) => `X ~ Bin(n = ${P.n}, p = ${P.p})`,
-      formula: 'P(X = k) = C(n, k) · p<sup>k</sup> · (1 − p)<sup>n − k</sup>,  k = 0, 1, …, n',
       validate(P) {
         const e = [];
         if (!(isInt(P.n) && P.n >= 1 && P.n <= 1e6)) e.push(['dN', 'n debe ser un entero entre 1 y 1 000 000.']);
@@ -58,7 +57,6 @@
       name: 'Poisson',
       params: ['lambda'],
       notation: (P) => `X ~ Poisson(λ = ${P.lambda})`,
-      formula: 'P(X = k) = e<sup>−λ</sup> · λ<sup>k</sup> / k!,  k = 0, 1, 2, …',
       validate(P) {
         return P.lambda > 0 && P.lambda <= 1e5 ? [] : [['dLambda', 'λ debe ser un número mayor que 0 (hasta 100 000).']];
       },
@@ -91,7 +89,6 @@
       params: ['N', 'K', 'n'],
       nLabel: 'Tamaño de la muestra (n)',
       notation: (P) => `X ~ H(N = ${P.N}, K = ${P.K}, n = ${P.n})`,
-      formula: 'P(X = k) = C(K, k) · C(N − K, n − k) / C(N, n)',
       validate(P) {
         const e = [];
         if (!(isInt(P.N) && P.N >= 1 && P.N <= 1e7)) e.push(['dPopN', 'N debe ser un entero mayor o igual a 1.']);
@@ -123,6 +120,71 @@
       ],
     },
   };
+
+
+  /* ------------------------------------------------- fórmulas (estilo libro) */
+  const { M } = window.Calc;
+  const { i, n: num, o, row, frac, sup, paren, binom } = M;
+  const fx = row(i('f'), paren(i('x')));
+  const oneMinusP = row(num('1'), o('−'), i('p'));
+  const FORMULAS = {
+    binom: {
+      formula: row(fx, o('='), binom(i('n'), i('x')), sup(i('p'), i('x')), sup(paren(num('1'), o('−'), i('p')), paren(i('n'), o('−'), i('x')))),
+      legend: [
+        [fx, 'probabilidad de <i>x</i> éxitos en <i>n</i> ensayos'],
+        [i('n'), 'número de ensayos'],
+        [binom(i('n'), i('x')), M.math(frac(row(i('n'), o('!')), row(i('x'), o('!'), paren(i('n'), o('−'), i('x')), o('!'))))],
+        [i('p'), 'probabilidad de un éxito en cualquiera de los ensayos'],
+        [oneMinusP, 'probabilidad de un fracaso en cualquiera de los ensayos'],
+        [i('x'), 'número de éxitos: 0, 1, 2, …, <i>n</i>'],
+      ],
+      moments: [
+        row(i('E'), paren(i('X')), o('='), i('μ'), o('='), i('n'), i('p')),
+        row(i('Var'), paren(i('X')), o('='), sup(i('σ'), num('2')), o('='), i('n'), i('p'), paren(num('1'), o('−'), i('p'))),
+      ],
+    },
+    poisson: {
+      formula: row(fx, o('='), frac(row(sup(i('λ'), i('x')), sup(i('e'), row(o('−'), i('λ')))), row(i('x'), o('!')))),
+      legend: [
+        [fx, 'probabilidad de <i>x</i> ocurrencias en un intervalo'],
+        [i('λ'), 'valor esperado o número medio de ocurrencias en un intervalo'],
+        [i('e'), '2,71828… (base de los logaritmos naturales)'],
+        [row(i('x'), o('!')), M.math(row(i('x'), o('·'), paren(i('x'), o('−'), num('1')), o('·'), o('…'), o('·'), num('2'), o('·'), num('1'))) + '  (factorial; 0! = 1)'],
+        [i('x'), 'número de ocurrencias: 0, 1, 2, … (sin máximo)'],
+      ],
+      moments: [
+        row(i('E'), paren(i('X')), o('='), i('μ'), o('='), i('λ')),
+        row(i('Var'), paren(i('X')), o('='), sup(i('σ'), num('2')), o('='), i('λ')),
+      ],
+    },
+    hyper: {
+      formula: row(fx, o('='), frac(row(binom(i('K'), i('x')), binom(row(i('N'), o('−'), i('K')), row(i('n'), o('−'), i('x')))), binom(i('N'), i('n')))),
+      legend: [
+        [fx, 'probabilidad de <i>x</i> éxitos en una muestra de <i>n</i> elementos'],
+        [i('n'), 'tamaño de la muestra (número de ensayos)'],
+        [i('N'), 'número de elementos de la población'],
+        [i('K'), 'número de elementos de la población considerados éxitos'],
+        [binom(i('K'), i('x')), 'formas de elegir los <i>x</i> éxitos entre los <i>K</i> éxitos de la población'],
+        [binom(row(i('N'), o('−'), i('K')), row(i('n'), o('−'), i('x'))), 'formas de elegir los <i>n</i> − <i>x</i> fracasos entre los <i>N</i> − <i>K</i> fracasos'],
+        [binom(i('N'), i('n')), 'formas de elegir la muestra de <i>n</i> elementos entre los <i>N</i>'],
+        [i('x'), 'número de éxitos en la muestra: de máx(0, <i>n</i> − (<i>N</i> − <i>K</i>)) a mín(<i>n</i>, <i>K</i>)'],
+      ],
+      moments: [
+        row(i('E'), paren(i('X')), o('='), i('μ'), o('='), i('n'), frac(i('K'), i('N'))),
+        row(i('Var'), paren(i('X')), o('='), sup(i('σ'), num('2')), o('='), i('n'), paren(frac(i('K'), i('N'))), paren(num('1'), o('−'), frac(i('K'), i('N'))), paren(frac(row(i('N'), o('−'), i('n')), row(i('N'), o('−'), num('1'))))),
+      ],
+    },
+  };
+
+  /** Tarjeta con la fórmula, el bloque "donde" y el valor esperado / varianza. */
+  function formulaCard(name) {
+    const F = FORMULAS[name];
+    const legend = F.legend.map(([sym, txt]) => `<div class="lg-sym">${M.math(sym)}</div><div class="lg-eq">=</div><div class="lg-txt">${txt}</div>`).join('');
+    return `<div class="fc-title">Distribución ${DISTS[name].name}</div>` +
+      `<div class="fc-formula">${M.math(F.formula, true)}</div>` +
+      `<div class="fc-where">donde</div><div class="fc-legend">${legend}</div>` +
+      `<div class="fc-moments">${F.moments.map((m) => M.math(m)).join('<span class="fc-sep"></span>')}</div>`;
+  }
 
   const EXAMPLES = {
     binom: {
@@ -198,7 +260,7 @@
     document.querySelectorAll('#dDistTabs .mode-btn').forEach((b) => b.classList.toggle('active', b.dataset.dist === name));
     document.querySelectorAll('[data-dparam]').forEach((el) => { el.hidden = !D.params.includes(el.dataset.dparam); });
     if (D.nLabel) $('dNLabel').textContent = D.nLabel;
-    $('dFormula').innerHTML = `<b>${D.name}:</b> ${D.formula}`;
+    $('dFormula').innerHTML = formulaCard(name);
     $('dExampleText').hidden = true;
     liveUpdate();
   }
@@ -228,7 +290,7 @@
       if (isInt(ev.a) && isInt(ev.b) && ev.a > ev.b) errs.push(['dA', 'a debe ser menor o igual que b.']);
       if (Math.abs(ev.a) > 1e6 || Math.abs(ev.b) > 1e6) errs.push(['dB', 'Los valores deben estar entre −1 000 000 y 1 000 000.']);
     } else if (!isInt(ev.k) || Math.abs(ev.k) > 1e6) {
-      errs.push(['dK', 'k debe ser un número entero (los valores de una variable discreta se cuentan: 0, 1, 2, …).']);
+      errs.push(['dK', 'x debe ser un número entero (los valores de una variable discreta se cuentan: 0, 1, 2, …).']);
     }
     ['dN', 'dP', 'dLambda', 'dPopN', 'dPopK', 'dK', 'dA', 'dB'].forEach((id) => $(id).classList.toggle('invalid', errs.some((e) => e[0] === id)));
     return errs.length ? { error: [...new Set(errs.map((e) => e[1]))].join(' ') } : { P, ev };
@@ -368,15 +430,15 @@
       const inEv = !r.empty && k >= r.ea && k <= r.eb;
       rows += `<tr class="${inEv ? 'current' : ''}"><td>${k}</td><td>${fmt(v)}</td><td>${fmt(Math.min(cum, 1))}</td><td>${fmt(Math.max(1 - before, 0))}</td></tr>`;
     }
-    const note = (dl > r.lo || dh < r.hi) ? `<caption class="muted small">Se muestran k = ${dl} a ${dh}; fuera de ese rango las probabilidades son prácticamente 0.</caption>` : '';
-    $('dTable').innerHTML = note + '<thead><tr><th>k</th><th>P(X = k)</th><th>P(X ≤ k)</th><th>P(X ≥ k)</th></tr></thead><tbody>' + rows + '</tbody>';
+    const note = (dl > r.lo || dh < r.hi) ? `<caption class="muted small">Se muestran x = ${dl} a ${dh}; fuera de ese rango las probabilidades son prácticamente 0.</caption>` : '';
+    $('dTable').innerHTML = note + '<thead><tr><th>x</th><th>P(X = x)</th><th>P(X ≤ x)</th><th>P(X ≥ x)</th></tr></thead><tbody>' + rows + '</tbody>';
   }
 
   function renderSteps(r) {
     const { D, P, ev } = r;
     const steps = [
       `Distribución: ${D.notation(P)}`,
-      `Fórmula: ${D.formula}`,
+      `Fórmula: ${M.math(FORMULAS[state.dist].formula)}`,
     ];
     const term = (k) => `P(X = ${k})`;
     const listTerms = (a, b) => {
@@ -466,7 +528,7 @@
       if (i % labelEvery === 0) s += `<text x="${X(k)}" y="${base + 18}" text-anchor="middle" font-size="12" fill="#374151" ${font}>${k}</text>`;
     });
     s += `<line x1="${L}" y1="${base}" x2="${W - R}" y2="${base}" stroke="#6b7280"/>`;
-    s += `<text x="${L + plotW / 2}" y="${H - 8}" text-anchor="middle" font-size="12.5" fill="#6b7280" ${font}>k</text>`;
+    s += `<text x="${L + plotW / 2}" y="${H - 8}" text-anchor="middle" font-size="12.5" fill="#6b7280" ${font}>x</text>`;
     // valor esperado
     if (r.mean >= dl - 0.5 && r.mean <= dh + 0.5) {
       const mx = L + (r.mean - dl + 0.5) * slot;
