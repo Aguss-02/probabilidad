@@ -177,8 +177,8 @@
         s.push(`P(X ≥ x) = (b − x)/(b − a)${clampNote(r.x1)}`);
         s.push(`P(X ≥ ${fmt(r.x1)}) = (${b} − ${fmt(c(r.x1))}) / (${b} − ${a}) = ${fmt(r.b - c(r.x1))} / ${fmt(r.L)} = <b>${fmt(r.prob)}</b>`);
       } else if (r.t === 'between') {
-        s.push(`P(x₁ ≤ X ≤ x₂) = (x₂ − x₁)/(b − a): la longitud del tramo dividida por la longitud total${clampNote(r.x1)}${clampNote(r.x2)}`);
-        s.push(`P(${fmt(r.x1)} ≤ X ≤ ${fmt(r.x2)}) = (${fmt(c(r.x2))} − ${fmt(c(r.x1))}) / (${b} − ${a}) = ${fmt(c(r.x2) - c(r.x1))} / ${fmt(r.L)} = <b>${fmt(r.prob)}</b>`);
+        s.push(`P(x₁ ≤ X ≤ x₂) = f(x) · (x₂ − x₁) = (x₂ − x₁)/(b − a): la densidad por la longitud del tramo${clampNote(r.x1)}${clampNote(r.x2)}`);
+        s.push(`P(${fmt(r.x1)} ≤ X ≤ ${fmt(r.x2)}) = ${fmt(1 / r.L)} · (${fmt(c(r.x2))} − ${fmt(c(r.x1))}) = ${fmt(1 / r.L)} · ${fmt(c(r.x2) - c(r.x1))} = <b>${fmt(r.prob)}</b>`);
       } else if (r.t === 'inv') {
         s.push('Despejando de P(X ≤ x) = (x − a)/(b − a) = p:  x = a + p · (b − a)');
         s.push(`x = ${a} + ${fmt(r.p)} · (${b} − ${a}) = ${a} + ${fmt(r.p * r.L)} = <b>${fmt(r.x)}</b>`);
@@ -208,7 +208,7 @@
         const c = (x) => num(Math.min(Math.max(x, r.a), r.b));
         if (r.t === 'le') lines.push(`${P}:   =(${c(r.x1)}-${A})/(${B}-${A})`);
         if (r.t === 'ge') lines.push(`${P}:   =(${B}-${c(r.x1)})/(${B}-${A})`);
-        if (r.t === 'between') lines.push(`${P}:   =(${c(r.x2)}-${c(r.x1)})/(${B}-${A})`);
+        if (r.t === 'between') lines.push(`${P}:   =1/(${B}-${A})*(${c(r.x2)}-${c(r.x1)})`);
         if (r.t === 'inv') lines.push(`x:   =${A}+${num(r.p)}*(${B}-${A})`);
         if (r.t === 'dens') lines.push(`f(x):   =${r.dens ? `1/(${B}-${A})` : '0'}`);
         lines.push(`${es ? 'Valor esperado' : 'Expected value'}:   =(${A}+${B})/2`);

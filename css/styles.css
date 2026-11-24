@@ -332,3 +332,12 @@ math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
 @media (max-width: 560px) { .fc-formula math { font-size: 1.05em; } .fc-formula { overflow-x: auto; } }
 .formula-cards { display: grid; gap: 12px; }
 .formula-cards .formula-card { margin-top: 0; }
+.math.interval { gap: 2px; }
+.formula.wide { grid-column: 1 / -1; }
+.formulas { grid-auto-flow: row dense; }
+.math.interval .two-lines { display: none; }
+@media (max-width: 640px) {
+  .math.interval .one-line { display: none; }
+  .math.interval .two-lines { display: block; }
+}
+@media (max-width: 640px) { .math.interval .two-lines math { font-size: 1.05em; } }
