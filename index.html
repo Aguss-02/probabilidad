@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=31">
+  <link rel="stylesheet" href="css/styles.css?v=32">
 </head>
 <body>
   <header class="site-header">
@@ -635,13 +635,8 @@
 
     <!-- ================= Distribución uniforme ================= -->
     <section class="card" id="unifCalc" data-calc="unif" hidden>
-      <h2 class="card-title">Distribución uniforme: probabilidad, valor esperado y gráfico</h2>
-      <p class="muted small">Todos los valores entre a y b son igualmente probables. Elegí si la variable es continua (cualquier número real del intervalo) o discreta (solo enteros).</p>
-
-      <div class="mode-row" id="uKindTabs">
-        <button class="mode-btn active" data-ukind="cont">Continua U(a, b)</button>
-        <button class="mode-btn" data-ukind="disc">Discreta {a, a+1, …, b}</button>
-      </div>
+      <h2 class="card-title">Distribución uniforme continua: probabilidad, valor esperado y gráfico</h2>
+      <p class="muted small">X ~ U(a, b): todos los valores entre a y b son igualmente probables (cualquier número real del intervalo).</p>
 
       <div class="inputs">
         <label class="field"><span>Mínimo (a)</span><input type="number" id="uA" value="2" step="any"></label>
@@ -717,18 +712,18 @@
 
     <details class="card theory fold-card" id="unifTheory" data-fold="unifTheory" data-calc="unif" hidden>
       <summary><h2 class="card-title">Teoría y ayuda: distribución uniforme</h2></summary>
-      <p>La distribución uniforme modela situaciones en las que <b>todos los valores de un rango son igual de probables</b>. Por ejemplo, el tiempo de espera de un colectivo que pasa cada 10 minutos (continua) o el resultado de un dado equilibrado (discreta).</p>
+      <p>La distribución uniforme modela situaciones en las que <b>todos los valores de un rango son igual de probables</b>. Por ejemplo, el tiempo de espera de un colectivo que pasa cada 10 minutos, si llegás a la parada en un momento al azar.</p>
       <div class="formulas">
         <div class="formula">
-          <div class="formula-name">Continua: densidad</div>
+          <div class="formula-name">Función de densidad</div>
           <div class="math"><math display="block"><mrow><mi>f</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math><div class="muted small">para a ≤ x ≤ b (fuera de ese intervalo vale 0)</div></div>
         </div>
         <div class="formula">
-          <div class="formula-name">Continua: acumulada</div>
+          <div class="formula-name">Probabilidad acumulada</div>
           <div class="math"><math display="block"><mrow><mi>P</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>X</mi><mo>≤</mo><mi>x</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>a</mi></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math></div>
         </div>
         <div class="formula wide">
-          <div class="formula-name">Continua: probabilidad en un intervalo</div>
+          <div class="formula-name">Probabilidad en un intervalo</div>
           <div class="math interval"><math display="block" class="one-line"><mrow><mi>P</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>≤</mo><mi>X</mi><mo>≤</mo><msub><mi>x</mi><mn>2</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>·</mo><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math><div class="two-lines"><math display="block"><mrow><mi>P</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>≤</mo><mi>X</mi><mo>≤</mo><msub><mi>x</mi><mn>2</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>·</mo><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></mrow></math><math display="block"><mrow><mo>=</mo><mfrac><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></mrow></math></div><div class="muted small">densidad × longitud del intervalo, con a ≤ x₁ ≤ x₂ ≤ b</div></div>
         </div>
         <div class="formula">
@@ -736,20 +731,12 @@
           <div class="math"><math display="block"><mrow><mi>E</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>X</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mn>2</mn></mfrac></mrow></math></div>
         </div>
         <div class="formula">
-          <div class="formula-name">Varianza (continua)</div>
+          <div class="formula-name">Varianza</div>
           <div class="math"><math display="block"><mrow><mi>Var</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>X</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup><mn>12</mn></mfrac></mrow></math></div>
-        </div>
-        <div class="formula">
-          <div class="formula-name">Discreta: probabilidad</div>
-          <div class="math"><math display="block"><mrow><mi>P</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>X</mi><mo>=</mo><mi>k</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mi>b</mi><mo>−</mo><mi>a</mi><mo>+</mo><mn>1</mn></mrow></mfrac></mrow></math></div>
-        </div>
-        <div class="formula">
-          <div class="formula-name">Varianza (discreta)</div>
-          <div class="math tight"><math display="block"><mrow><mi>Var</mi><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>X</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>=</mo><mfrac><mrow><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo>+</mo><mn>1</mn><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow><mn>12</mn></mfrac></mrow></math></div>
         </div>
       </div>
       <h3>Idea clave</h3>
-      <p>En la uniforme continua, la probabilidad de un intervalo es simplemente <b>su longitud dividida por la longitud total</b>: P(x₁ ≤ X ≤ x₂) = (x₂ − x₁)/(b − a). Además P(X = x) = 0 para cualquier valor puntual, por lo que da lo mismo usar ≤ o &lt;. En la discreta, en cambio, se cuentan los valores enteros posibles.</p>
+      <p>En la uniforme, la probabilidad de un intervalo es simplemente <b>su longitud dividida por la longitud total</b>: P(x₁ ≤ X ≤ x₂) = (x₂ − x₁)/(b − a). Además P(X = x) = 0 para cualquier valor puntual, por lo que da lo mismo usar ≤ o &lt;.</p>
     </details>
 
     <!-- ================= Regresión lineal ================= -->
@@ -892,13 +879,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=31"></script>
-  <script src="js/normal.js?v=31"></script>
-  <script src="js/app.js?v=31"></script>
-  <script src="js/ci.js?v=31"></script>
-  <script src="js/discrete.js?v=31"></script>
-  <script src="js/uniform.js?v=31"></script>
-  <script src="js/regression.js?v=31"></script>
-  <script src="js/switcher.js?v=31"></script>
+  <script src="js/common.js?v=32"></script>
+  <script src="js/normal.js?v=32"></script>
+  <script src="js/app.js?v=32"></script>
+  <script src="js/ci.js?v=32"></script>
+  <script src="js/discrete.js?v=32"></script>
+  <script src="js/uniform.js?v=32"></script>
+  <script src="js/regression.js?v=32"></script>
+  <script src="js/switcher.js?v=32"></script>
 </body>
 </html>

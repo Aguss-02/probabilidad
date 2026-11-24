@@ -53,7 +53,7 @@ Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#interva
 
 ## Distribución uniforme (`#uniforme`)
 
-- Continua U(a, b) o discreta {a, …, b}.
+- Uniforme continua U(a, b).
 - Probabilidades, percentil (inversa), densidad, E[X], Var(X), σ, gráfico, paso a paso y Excel.
 
 ## Regresión lineal (`#regresion`)
