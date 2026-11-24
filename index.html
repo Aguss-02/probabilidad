@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=25">
+  <link rel="stylesheet" href="css/styles.css?v=27">
 </head>
 <body>
   <header class="site-header">
@@ -506,7 +506,6 @@
           <button class="mode-btn" data-dist="poisson">Poisson</button>
           <button class="mode-btn" data-dist="hyper">Hipergeométrica</button>
         </div>
-        <div class="formula-card" id="dFormula"></div>
 
         <div class="inputs">
           <label class="field" data-dparam="n"><span id="dNLabel">Número de ensayos (n)</span><input type="number" id="dN" value="10" step="1" min="0"></label>
@@ -607,6 +606,9 @@
     <details class="card theory fold-card" id="discTheory" data-fold="discTheory" data-calc="disc" hidden>
       <summary><h2 class="card-title">Teoría y ayuda: distribuciones discretas</h2></summary>
       <p>Una variable aleatoria es <b>discreta</b> cuando toma valores aislados que se pueden contar (0, 1, 2, …). Su distribución se describe con la función de probabilidad f(x) = P(X = x), y la suma de todas las probabilidades es 1.</p>
+      <h3>Fórmulas</h3>
+      <div class="formula-cards" id="dTheoryFormulas"></div>
+      <h3>Resumen</h3>
       <div class="table-wrap">
         <table class="calc-table">
           <thead><tr><th>Distribución</th><th>Cuándo se usa</th><th>f(x) = P(X = x)</th><th>E(X)</th><th>Var(X)</th></tr></thead>
@@ -886,13 +888,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=25"></script>
-  <script src="js/normal.js?v=25"></script>
-  <script src="js/app.js?v=25"></script>
-  <script src="js/ci.js?v=25"></script>
-  <script src="js/discrete.js?v=25"></script>
-  <script src="js/uniform.js?v=25"></script>
-  <script src="js/regression.js?v=25"></script>
-  <script src="js/switcher.js?v=25"></script>
+  <script src="js/common.js?v=27"></script>
+  <script src="js/normal.js?v=27"></script>
+  <script src="js/app.js?v=27"></script>
+  <script src="js/ci.js?v=27"></script>
+  <script src="js/discrete.js?v=27"></script>
+  <script src="js/uniform.js?v=27"></script>
+  <script src="js/regression.js?v=27"></script>
+  <script src="js/switcher.js?v=27"></script>
 </body>
 </html>

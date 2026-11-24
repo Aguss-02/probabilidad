@@ -180,10 +180,10 @@
   function formulaCard(name) {
     const F = FORMULAS[name];
     const legend = F.legend.map(([sym, txt]) => `<div class="lg-sym">${M.math(sym)}</div><div class="lg-eq">=</div><div class="lg-txt">${txt}</div>`).join('');
-    return `<div class="fc-title">Distribución ${DISTS[name].name}</div>` +
+    return `<div class="formula-card"><div class="fc-title">Distribución ${DISTS[name].name}</div>` +
       `<div class="fc-formula">${M.math(F.formula, true)}</div>` +
       `<div class="fc-where">donde</div><div class="fc-legend">${legend}</div>` +
-      `<div class="fc-moments">${F.moments.map((m) => M.math(m)).join('<span class="fc-sep"></span>')}</div>`;
+      `<div class="fc-moments">${F.moments.map((m) => M.math(m)).join('<span class="fc-sep"></span>')}</div></div>`;
   }
 
   const EXAMPLES = {
@@ -260,7 +260,6 @@
     document.querySelectorAll('#dDistTabs .mode-btn').forEach((b) => b.classList.toggle('active', b.dataset.dist === name));
     document.querySelectorAll('[data-dparam]').forEach((el) => { el.hidden = !D.params.includes(el.dataset.dparam); });
     if (D.nLabel) $('dNLabel').textContent = D.nLabel;
-    $('dFormula').innerHTML = formulaCard(name);
     $('dExampleText').hidden = true;
     liveUpdate();
   }
@@ -590,6 +589,7 @@
     });
     $('dExampleBtn').addEventListener('click', loadExample);
     wireFoldButtons('dExpandAll', 'dCollapseAll', 'dResult');
+    $('dTheoryFormulas').innerHTML = ['binom', 'poisson', 'hyper'].map(formulaCard).join('');
     syncTypeFields();
     renderChooser();
     setDist('binom');

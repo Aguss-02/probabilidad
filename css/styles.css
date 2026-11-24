@@ -330,3 +330,5 @@ math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
   .fc-legend { font-size: .95rem; column-gap: 6px; }
 }
 @media (max-width: 560px) { .fc-formula math { font-size: 1.05em; } .fc-formula { overflow-x: auto; } }
+.formula-cards { display: grid; gap: 12px; }
+.formula-cards .formula-card { margin-top: 0; }
