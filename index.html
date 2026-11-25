@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=34">
+  <link rel="stylesheet" href="css/styles.css?v=37">
 </head>
 <body>
   <header class="site-header">
@@ -314,7 +314,14 @@
           <input type="number" id="ciMean" value="998.6" step="any">
         </label>
         <label class="field">
-          <span>Desviación estándar (σ o s)</span>
+          <span>El dato de dispersión es</span>
+          <select id="ciDisp">
+            <option value="sd">Desviación estándar (σ)</option>
+            <option value="var">Varianza (σ²)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span id="ciSdLabel">Desviación estándar (σ)</span>
           <input type="number" id="ciSd" value="3.2" step="any" min="0">
         </label>
         <label class="field">
@@ -411,6 +418,14 @@
           </div>
         </details>
 
+        <details class="fold" data-fold="ciStd">
+          <summary><span class="fold-icon">Z</span> Resolución tipificando (como en clase)</summary>
+          <div class="fold-body">
+            <p class="muted small">Se parte del intervalo de la normal estándar N(0 ; 1), se tipifica la media muestral y se despeja μ.</p>
+            <ol id="ciStdSteps"></ol>
+          </div>
+        </details>
+
         <details class="fold" data-fold="ciSteps">
           <summary><span class="fold-icon"><i>ƒ</i></span> Cálculo paso a paso</summary>
           <div class="fold-body"><ol id="ciSteps"></ol></div>
@@ -446,6 +461,32 @@
           <div class="formula-name">Tamaño de muestra</div>
           <div class="math"><math display="block"><mrow><mi>n</mi><mo>=</mo><msup><mrow><mo lspace="0" rspace="0">(</mo><mfrac><mrow><msub><mi>z</mi><mrow><mi>α</mi><mo lspace="0" rspace="0">/</mo><mn>2</mn></mrow></msub><mi>σ</mi></mrow><mi>E</mi></mfrac><mo lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow></math></div>
         </div>
+        <div class="formula">
+          <div class="formula-name">Desvío a partir de la varianza</div>
+          <div class="math"><math display="block"><mrow><mi>σ</mi><mo>=</mo><msqrt><msup><mi>σ</mi><mn>2</mn></msup></msqrt></mrow></math><div class="muted small">si el enunciado da la varianza σ², primero se saca la raíz</div></div>
+        </div>
+        <div class="formula">
+          <div class="formula-name">Error estándar de la media</div>
+          <div class="math"><math display="block"><mrow><msub><mi>σ</mi><mover accent="true"><mi>x</mi><mo>¯</mo></mover></msub><mo>=</mo><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math><div class="muted small">desvío de la media muestral x̄</div></div>
+        </div>
+      </div>
+
+      <h3>Resolución tipificando (paso a paso)</h3>
+      <p>Es la misma fórmula, pero obtenida desde la normal estándar, como se hace en clase:</p>
+      <ol class="std-steps"><li><div>En la normal estándar N(0 ; 1) se busca el intervalo central con la confianza pedida. Al 95 %:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mo>≤</mo><mi>Z</mi><mo>≤</mo><mn>1.96</mn></mrow></math> <span class="muted">→  IC(−1.96 ; 1.96)</span></div></li><li><div>La media muestral se distribuye normal, con desvío σ/√n:</div><div class="step-math"><math><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>∼</mo><mi>N</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>μ</mi><mo>;</mo><mfrac displaystyle="true"><msup><mi>σ</mi><mn>2</mn></msup><mi>n</mi></mfrac><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></math></div></li><li><div>Se tipifica la media muestral:</div><div class="step-math"><math><mrow><mi>Z</mi><mo>=</mo><mfrac displaystyle="true"><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mi>μ</mi></mrow><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac></mrow></math></div></li><li><div>Se reemplaza Z en el intervalo:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mo>≤</mo><mfrac displaystyle="true"><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mi>μ</mi></mrow><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac><mo>≤</mo><mn>1.96</mn></mrow></math></div></li><li><div>Se multiplica todo por σ/√n:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac><mo>≤</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mi>μ</mi><mo>≤</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div></li><li><div>Se despeja μ, y queda el intervalo de confianza:</div><div class="step-math"><math><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac><mo>≤</mo><mi>μ</mi><mo>≤</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>+</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div></li></ol>
+      <div class="worked">
+        <div class="worked-title">Ejemplo resuelto</div>
+        <p><i>Se toma una muestra de n = 8 con media x̄ = 22.5. La varianza poblacional es σ² = 4. Construir el intervalo de confianza del 95 % para μ.</i></p>
+        <ol>
+          <li>Desvío: σ = √4 = 2</li>
+          <li>Error estándar: σ/√n = 2/√8 = 2/2.8284 = 0.7071</li>
+          <li>Al 95 % en N(0 ; 1): IC(−1.96 ; 1.96)</li>
+          <li>Tipificar: −1.96 ≤ (22.5 − μ)/0.7071 ≤ 1.96</li>
+          <li>Multiplicar por 0.7071: −1.3859 ≤ 22.5 − μ ≤ 1.3859</li>
+          <li>Despejar μ: 22.5 − 1.3859 ≤ μ ≤ 22.5 + 1.3859</li>
+          <li><b>IC = (21.1141 ; 23.8859)</b></li>
+        </ol>
+        <p class="muted small">En la calculadora: n = 8, x̄ = 22.5, "El dato de dispersión es" → Varianza, valor 4, confianza 95 %. En el resultado, abrí "Resolución tipificando".</p>
       </div>
 
       <h3>Valores críticos más usados</h3>
@@ -457,7 +498,7 @@
 
       <h3>Cómo usarla</h3>
       <ol class="howto">
-        <li><span>1</span><div>Ingresá el tamaño de la muestra <b>n</b>, la media muestral <b>x̄</b> y la desviación estándar.</div></li>
+        <li><span>1</span><div>Ingresá el tamaño de la muestra <b>n</b>, la media muestral <b>x̄</b> y el dato de dispersión. Si el enunciado da la <b>varianza</b>, elegí "Varianza" en "El dato de dispersión es" y la calculadora saca la raíz sola.</div></li>
         <li><span>2</span><div>Elegí el nivel de confianza (o tocá 90 %, 95 %, 98 % o 99 %).</div></li>
         <li><span>3</span><div>Leé el intervalo [límite inferior, límite superior] y el margen de error. Abrí las secciones de abajo para ver el gráfico, el paso a paso y las fórmulas de Excel.</div></li>
       </ol>
@@ -887,13 +928,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=34"></script>
-  <script src="js/normal.js?v=34"></script>
-  <script src="js/app.js?v=34"></script>
-  <script src="js/ci.js?v=34"></script>
-  <script src="js/discrete.js?v=34"></script>
-  <script src="js/uniform.js?v=34"></script>
-  <script src="js/regression.js?v=34"></script>
-  <script src="js/switcher.js?v=34"></script>
+  <script src="js/common.js?v=37"></script>
+  <script src="js/normal.js?v=37"></script>
+  <script src="js/app.js?v=37"></script>
+  <script src="js/ci.js?v=37"></script>
+  <script src="js/discrete.js?v=37"></script>
+  <script src="js/uniform.js?v=37"></script>
+  <script src="js/regression.js?v=37"></script>
+  <script src="js/switcher.js?v=37"></script>
 </body>
 </html>

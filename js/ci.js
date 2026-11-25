@@ -23,14 +23,16 @@
   }
 
   function ciValidate() {
-    const n = readNum('ciN'), mean = readNum('ciMean'), sd = readNum('ciSd'), conf = readNum('ciConf');
+    const n = readNum('ciN'), mean = readNum('ciMean'), raw = readNum('ciSd'), conf = readNum('ciConf');
+    const isVar = $('ciDisp').value === 'var';
+    const sd = isVar ? Math.sqrt(raw) : raw; // si el dato es la varianza, el desvío es su raíz
     const bad = [], msgs = [];
     if (!(Number.isInteger(n) && n >= 1)) { bad.push('ciN'); msgs.push('El tamaño de la muestra (n) debe ser un número entero mayor o igual a 1.'); }
     if (!Number.isFinite(mean)) { bad.push('ciMean'); msgs.push('Ingresá una media muestral (x̄) válida.'); }
-    if (!(sd > 0)) { bad.push('ciSd'); msgs.push('La desviación estándar debe ser mayor que 0.'); }
+    if (!(raw > 0)) { bad.push('ciSd'); msgs.push(isVar ? 'La varianza debe ser mayor que 0.' : 'La desviación estándar debe ser mayor que 0.'); }
     if (!(conf > 0 && conf < 100)) { bad.push('ciConf'); msgs.push('El nivel de confianza debe estar entre 0 y 100 %.'); }
     ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => $(id).classList.toggle('invalid', bad.includes(id)));
-    return msgs.length ? { error: msgs.join(' ') } : { n, mean, sd, conf };
+    return msgs.length ? { error: msgs.join(' ') } : { n, mean, sd, conf, raw, isVar };
   }
 
   function ciCompute({ n, mean, sd, conf }) {
@@ -44,6 +46,7 @@
   /* ------------------------------------------------------------ render */
   function ciRender(r) {
     const sdName = $('ciSdType').value === 'pop' ? 'σ' : 's';
+    const varStep = r.isVar ? `Desvío a partir de la varianza: ${sdName} = √${sdName}² = √${fmt(r.raw)} = <b>${fmt(r.sd)}</b>` : null;
     $('ciResult').hidden = false;
     $('ciMain').textContent = `IC ${fmt(r.conf, 4)} %: [${fmt(r.lo)} ; ${fmt(r.hi)}]`;
     $('ciPm').textContent = `x̄ ± E = ${fmt(r.mean)} ± ${fmt(r.E)}`;
@@ -65,7 +68,8 @@
       `El intervalo se centra en la media muestral (${fmt(r.mean)}) y se extiende ${fmt(r.E)} hacia cada lado (margen de error).`;
 
     $('ciMeasures').innerHTML = [
-      ['Tamaño de la muestra (n)', r.n], ['Media muestral (x̄)', fmt(r.mean)], [`Desviación estándar (${sdName})`, fmt(r.sd)],
+      ['Tamaño de la muestra (n)', r.n], ['Media muestral (x̄)', fmt(r.mean)],
+      [`Varianza (${sdName}²)`, fmt(r.sd * r.sd)], [`Desviación estándar (${sdName} = √${sdName}²)`, fmt(r.sd)],
       ['Nivel de confianza (1 − α)', `${fmt(r.conf, 4)} %`], ['α', fmt(r.alpha, 6)], ['Valor crítico z<sub>α/2</sub>', fmt(r.z)],
       [`Error estándar (${sdName}/√n)`, fmt(r.se)], ['Margen de error (E)', fmt(r.E)],
       ['Límite inferior', fmt(r.lo)], ['Límite superior', fmt(r.hi)], ['Ancho del intervalo (2E)', fmt(2 * r.E)],
@@ -91,24 +95,41 @@
     // paso a paso
     const a2 = r.alpha / 2;
     $('ciSteps').innerHTML = [
+      varStep,
       `Nivel de confianza: 1 − α = ${fmt(r.c, 6)}  →  α = ${fmt(r.alpha, 6)}  →  α/2 = ${fmt(a2, 6)}`,
       `Valor crítico: z<sub>α/2</sub> = Φ⁻¹(1 − α/2) = Φ⁻¹(${fmt(1 - a2, 6)}) = <b>${fmt(r.z)}</b>`,
       `Error estándar: ${sdName}/√n = ${fmt(r.sd)} / √${r.n} = ${fmt(r.sd)} / ${fmt(Math.sqrt(r.n))} = <b>${fmt(r.se)}</b>`,
       `Margen de error: E = z<sub>α/2</sub> · ${sdName}/√n = ${fmt(r.z)} × ${fmt(r.se)} = <b>${fmt(r.E)}</b>`,
       `Límites: x̄ − E = ${fmt(r.mean)} − ${fmt(r.E)} = <b>${fmt(r.lo)}</b>;  x̄ + E = ${fmt(r.mean)} + ${fmt(r.E)} = <b>${fmt(r.hi)}</b>`,
-    ].map((t) => `<li>${t}</li>`).join('');
+    ].filter(Boolean).map((t) => `<li>${t}</li>`).join('');
+
+    // resolución tipificando (como en clase)
+    const zf = fmt(r.z), se = fmt(r.se), m = fmt(r.mean);
+    $('ciStdSteps').innerHTML = [
+      varStep,
+      `En la normal estándar N(0 ; 1), el ${fmt(r.conf, 4)} % central está entre −z y z: P(−z ≤ Z ≤ z) = ${fmt(r.c, 6)}  →  z = ${zf}  →  <b>IC(−${zf} ; ${zf})</b>`,
+      `La media muestral se distribuye x̄ ~ N(μ ; ${sdName}²/n), con ${sdName}²/n = ${fmt(r.sd * r.sd)}/${r.n} = ${fmt(r.se * r.se)}, es decir, un desvío de ${sdName}/√n = ${fmt(r.sd)}/√${r.n} = <b>${se}</b>`,
+      `Tipificamos: Z = (x̄ − μ) / (${sdName}/√n) = (${m} − μ) / ${se}`,
+      `Planteamos el intervalo: −${zf} ≤ (${m} − μ) / ${se} ≤ ${zf}`,
+      `Multiplicamos todo por ${se}: −${zf} × ${se} ≤ ${m} − μ ≤ ${zf} × ${se}  →  −${fmt(r.E)} ≤ ${m} − μ ≤ ${fmt(r.E)}`,
+      `Despejamos μ: ${m} − ${fmt(r.E)} ≤ μ ≤ ${m} + ${fmt(r.E)}`,
+      `<b>IC = (${fmt(r.lo)} ; ${fmt(r.hi)})</b>`,
+    ].filter(Boolean).map((t) => `<li>${t}</li>`).join('');
 
     // Excel
-    const A = code(+r.alpha.toPrecision(12)), S = code(r.sd), N = code(r.n), M = code(r.mean);
+    const A = code(+r.alpha.toPrecision(12)), N = code(r.n), M = code(r.mean);
+    let S = code(r.sd);
+    const Sen = r.isVar ? `SQRT(${code(r.raw)})` : S;
+    if (r.isVar) S = `RAIZ(${code(r.raw)})`;
     $('ciExcelEs').textContent =
       `Margen de error:   =INTERVALO.CONFIANZA.NORM(${A}; ${S}; ${N})\n` +
       `Límite inferior:   =${M} - INTERVALO.CONFIANZA.NORM(${A}; ${S}; ${N})\n` +
       `Límite superior:   =${M} + INTERVALO.CONFIANZA.NORM(${A}; ${S}; ${N})\n` +
       `Valor crítico z:   =INV.NORM.ESTAND(1 - ${A}/2)`;
     $('ciExcelEn').textContent =
-      `Margin of error:   =CONFIDENCE.NORM(${A}, ${S}, ${N})\n` +
-      `Lower limit:       =${M} - CONFIDENCE.NORM(${A}, ${S}, ${N})\n` +
-      `Upper limit:       =${M} + CONFIDENCE.NORM(${A}, ${S}, ${N})\n` +
+      `Margin of error:   =CONFIDENCE.NORM(${A}, ${Sen}, ${N})\n` +
+      `Lower limit:       =${M} - CONFIDENCE.NORM(${A}, ${Sen}, ${N})\n` +
+      `Upper limit:       =${M} + CONFIDENCE.NORM(${A}, ${Sen}, ${N})\n` +
       `Critical z:        =NORM.S.INV(1 - ${A}/2)`;
 
     ciChart(r);
@@ -193,6 +214,14 @@
     svg.innerHTML = s;
   }
 
+  /** El rótulo del campo cambia según el dato sea el desvío o la varianza. */
+  function syncSdLabel() {
+    const n = $('ciSdType').value === 'pop' ? 'σ' : 's';
+    $('ciSdLabel').textContent = $('ciDisp').value === 'var' ? `Varianza (${n}²)` : `Desviación estándar (${n})`;
+    $('ciDisp').options[0].text = `Desviación estándar (${n})`;
+    $('ciDisp').options[1].text = `Varianza (${n}²)`;
+  }
+
   /* ------------------------------------------------------------- control */
   function ciRun(showErrors = false) {
     if (showErrors) $('ciResult').dataset.started = '1'; // ya se tocó "Calcular"
@@ -202,7 +231,7 @@
       return false;
     }
     $('ciError').hidden = true;
-    ciState.last = ciCompute(inp);
+    ciState.last = Object.assign(ciCompute(inp), { isVar: inp.isVar, raw: inp.raw });
     ciRender(ciState.last);
     return true;
   }
@@ -215,7 +244,9 @@
       $(id).addEventListener('input', liveUpdate);
       $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') ciRun(true); });
     });
-    $('ciSdType').addEventListener('change', liveUpdate);
+    $('ciSdType').addEventListener('change', () => { syncSdLabel(); liveUpdate(); });
+    $('ciDisp').addEventListener('change', () => { syncSdLabel(); liveUpdate(); });
+    syncSdLabel();
     $('ciDecimals').addEventListener('change', () => { liveUpdate(); });
     $('ciE').addEventListener('input', () => { ciState.autoE = false; if (ciState.last) ciSize(ciState.last); });
     document.querySelectorAll('[data-ci-conf]').forEach((b) => b.addEventListener('click', () => { $('ciConf').value = b.dataset.ciConf; liveUpdate(); }));
@@ -226,7 +257,7 @@
       $('ciError').hidden = true; $('ciResult').hidden = true; ciState.autoE = true; $('ciE').value = '';
     });
     $('ciExampleBtn').addEventListener('click', () => {
-      $('ciN').value = 60; $('ciMean').value = 998.6; $('ciSd').value = 3.2; $('ciConf').value = 95;
+      $('ciN').value = 60; $('ciMean').value = 998.6; $('ciSd').value = 3.2; $('ciConf').value = 95; $('ciDisp').value = 'sd'; syncSdLabel();
       ciState.autoE = true; $('ciE').value = '';
       ['ciN', 'ciMean', 'ciSd', 'ciConf'].forEach((id) => $(id).classList.remove('invalid'));
       liveUpdate();

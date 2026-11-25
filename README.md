@@ -42,6 +42,8 @@ Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#interva
 - Datos: tamaño de la muestra n, media muestral x̄, desviación estándar (σ o s) y nivel de confianza.
 - Resultado: intervalo x̄ ± z·σ/√n, margen de error, valor crítico z y error estándar.
 - Secciones desplegables: gráfico de la distribución muestral, resumen de valores, el mismo intervalo con otros niveles de confianza, tamaño de muestra necesario para un margen de error, cálculo paso a paso y fórmulas de Excel (`INTERVALO.CONFIANZA.NORM` / `CONFIDENCE.NORM`).
+- El dato de dispersión puede ser la desviación estándar o la varianza (saca la raíz sola).
+- "Resolución tipificando": parte de IC(−z ; z) en la N(0;1), tipifica la media muestral y despeja μ, con los números del ejercicio.
 - Si se usa la desviación muestral s con n < 30, avisa que conviene usar la t de Student.
 
 ## Distribuciones discretas (`#discreta`)

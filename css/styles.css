@@ -341,3 +341,13 @@ math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
   .math.interval .two-lines { display: block; }
 }
 @media (max-width: 640px) { .math.interval .two-lines math { font-size: 1.05em; } }
+
+/* ---------- intervalo: resolución tipificando ---------- */
+.std-steps { padding-left: 22px; }
+.std-steps li { margin-bottom: 10px; }
+.std-steps .step-math { margin-top: 4px; }
+.std-steps .step-math math { font-size: 1.2em; math-style: normal; }
+.worked { margin-top: 14px; padding: 14px 18px; border-radius: 12px; border: 1px solid #d9c8fb; background: #faf7ff; }
+.worked-title { font-weight: 800; color: #4c1d95; margin-bottom: 4px; }
+.worked ol { margin: 6px 0; padding-left: 22px; }
+.worked li { margin-bottom: 4px; }
