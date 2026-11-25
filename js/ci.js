@@ -122,9 +122,9 @@
     const Sen = r.isVar ? `SQRT(${code(r.raw)})` : S;
     if (r.isVar) S = `RAIZ(${code(r.raw)})`;
     $('ciExcelEs').textContent =
-      `Margen de error:   =INTERVALO.CONFIANZA.NORM(${A}; ${S}; ${N})\n` +
-      `Límite inferior:   =${M} - INTERVALO.CONFIANZA.NORM(${A}; ${S}; ${N})\n` +
-      `Límite superior:   =${M} + INTERVALO.CONFIANZA.NORM(${A}; ${S}; ${N})\n` +
+      `Margen de error:   =INTERVALO.CONFIANZA.NORM(${A}, ${S}, ${N})\n` +
+      `Límite inferior:   =${M} - INTERVALO.CONFIANZA.NORM(${A}, ${S}, ${N})\n` +
+      `Límite superior:   =${M} + INTERVALO.CONFIANZA.NORM(${A}, ${S}, ${N})\n` +
       `Valor crítico z:   =INV.NORM.ESTAND(1 - ${A}/2)`;
     $('ciExcelEn').textContent =
       `Margin of error:   =CONFIDENCE.NORM(${A}, ${Sen}, ${N})\n` +

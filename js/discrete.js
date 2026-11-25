@@ -40,7 +40,7 @@
         return `C(${P.n}, ${k}) · ${P.p}<sup>${k}</sup> · ${q}<sup>${P.n - k}</sup> = ${fmtBig(choose(P.n, k))} · ${fmt(Math.pow(P.p, k), 8)} · ${fmt(Math.pow(q, P.n - k), 8)}`;
       },
       excel: {
-        es: (k, P, c) => `DISTR.BINOM.N(${k}; ${P.n}; ${P.p}; ${c ? 'VERDADERO' : 'FALSO'})`,
+        es: (k, P, c) => `DISTR.BINOM.N(${k}, ${P.n}, ${P.p}, ${c ? 'VERDADERO' : 'FALSO'})`,
         en: (k, P, c) => `BINOM.DIST(${k}, ${P.n}, ${P.p}, ${c ? 'TRUE' : 'FALSE'})`,
         mean: (P) => [`=${P.n}*${P.p}`, `=${P.n}*${P.p}*(1-${P.p})`],
       },
@@ -71,7 +71,7 @@
         return `e<sup>−${P.lambda}</sup> · ${P.lambda}<sup>${k}</sup> / ${k}! = ${fmt(Math.exp(-P.lambda), 8)} · ${fmtBig(Math.pow(P.lambda, k))} / ${fact}`;
       },
       excel: {
-        es: (k, P, c) => `POISSON.DIST(${k}; ${P.lambda}; ${c ? 'VERDADERO' : 'FALSO'})`,
+        es: (k, P, c) => `POISSON.DIST(${k}, ${P.lambda}, ${c ? 'VERDADERO' : 'FALSO'})`,
         en: (k, P, c) => `POISSON.DIST(${k}, ${P.lambda}, ${c ? 'TRUE' : 'FALSE'})`,
         mean: (P) => [`=${P.lambda}`, `=${P.lambda}`],
       },
@@ -108,7 +108,7 @@
       varStep: (P) => `Var(X) = n · (K/N) · (1 − K/N) · (N − n)/(N − 1) = ${P.n} · ${fmt(P.K / P.N)} · ${fmt(1 - P.K / P.N)} · ${P.N - P.n}/${P.N - 1} = <b>${fmt(DISTS.hyper.variance(P))}</b>`,
       subst: (k, P) => `C(${P.K}, ${k}) · C(${P.N - P.K}, ${P.n - k}) / C(${P.N}, ${P.n}) = ${fmtBig(choose(P.K, k))} · ${fmtBig(choose(P.N - P.K, P.n - k))} / ${fmtBig(choose(P.N, P.n))}`,
       excel: {
-        es: (k, P, c) => `DISTR.HIPERGEOM.N(${k}; ${P.n}; ${P.K}; ${P.N}; ${c ? 'VERDADERO' : 'FALSO'})`,
+        es: (k, P, c) => `DISTR.HIPERGEOM.N(${k}, ${P.n}, ${P.K}, ${P.N}, ${c ? 'VERDADERO' : 'FALSO'})`,
         en: (k, P, c) => `HYPGEOM.DIST(${k}, ${P.n}, ${P.K}, ${P.N}, ${c ? 'TRUE' : 'FALSE'})`,
         mean: (P) => [`=${P.n}*${P.K}/${P.N}`, `=${P.n}*(${P.K}/${P.N})*(1-${P.K}/${P.N})*(${P.N}-${P.n})/(${P.N}-1)`],
       },

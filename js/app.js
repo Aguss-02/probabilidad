@@ -115,7 +115,7 @@
             `Estandarizar: z = (x − μ) / σ = (${fmt(x1)} − ${fmt(mu)}) / ${fmt(sigma)} = ${fmt(z1)}`,
             `Buscar en la tabla normal estándar: P(X ≤ ${fmt(x1)}) = Φ(${fmt(z1)}) = <b>${fmt(P)}</b>`,
           ],
-          excelEs: `=DISTR.NORM.N(${code(x1)}; ${muC}; ${sC}; VERDADERO)`,
+          excelEs: `=DISTR.NORM.N(${code(x1)}, ${muC}, ${sC}, VERDADERO)`,
           excelEn: `=NORM.DIST(${code(x1)}, ${muC}, ${sC}, TRUE)`,
         });
         break;
@@ -131,7 +131,7 @@
             `Estandarizar: z = (x − μ) / σ = (${fmt(x1)} − ${fmt(mu)}) / ${fmt(sigma)} = ${fmt(z1)}`,
             `Usar el complemento: P(X ≥ ${fmt(x1)}) = 1 − Φ(${fmt(z1)}) = 1 − ${fmt(1 - P)} = <b>${fmt(P)}</b>`,
           ],
-          excelEs: `=1 - DISTR.NORM.N(${code(x1)}; ${muC}; ${sC}; VERDADERO)`,
+          excelEs: `=1 - DISTR.NORM.N(${code(x1)}, ${muC}, ${sC}, VERDADERO)`,
           excelEn: `=1 - NORM.DIST(${code(x1)}, ${muC}, ${sC}, TRUE)`,
         });
         break;
@@ -148,7 +148,7 @@
             `Probabilidades acumuladas: Φ(z₁) = ${fmt(L)};  Φ(z₂) = ${fmt(1 - U)}`,
             `Restar: P(${fmt(x1)} ≤ X ≤ ${fmt(x2)}) = Φ(z₂) − Φ(z₁) = ${fmt(1 - U)} − ${fmt(L)} = <b>${fmt(P)}</b>`,
           ],
-          excelEs: `=DISTR.NORM.N(${code(x2)}; ${muC}; ${sC}; VERDADERO) - DISTR.NORM.N(${code(x1)}; ${muC}; ${sC}; VERDADERO)`,
+          excelEs: `=DISTR.NORM.N(${code(x2)}, ${muC}, ${sC}, VERDADERO) - DISTR.NORM.N(${code(x1)}, ${muC}, ${sC}, VERDADERO)`,
           excelEn: `=NORM.DIST(${code(x2)}, ${muC}, ${sC}, TRUE) - NORM.DIST(${code(x1)}, ${muC}, ${sC}, TRUE)`,
         });
         break;
@@ -165,7 +165,7 @@
             `Cola izquierda: P(X ≤ x₁) = Φ(z₁) = ${fmt(L)};  cola derecha: P(X ≥ x₂) = 1 − Φ(z₂) = ${fmt(U)}`,
             `Sumar las colas: ${fmt(L)} + ${fmt(U)} = <b>${fmt(P)}</b>`,
           ],
-          excelEs: `=1 - (DISTR.NORM.N(${code(x2)}; ${muC}; ${sC}; VERDADERO) - DISTR.NORM.N(${code(x1)}; ${muC}; ${sC}; VERDADERO))`,
+          excelEs: `=1 - (DISTR.NORM.N(${code(x2)}, ${muC}, ${sC}, VERDADERO) - DISTR.NORM.N(${code(x1)}, ${muC}, ${sC}, VERDADERO))`,
           excelEn: `=1 - (NORM.DIST(${code(x2)}, ${muC}, ${sC}, TRUE) - NORM.DIST(${code(x1)}, ${muC}, ${sC}, TRUE))`,
         });
         break;
@@ -182,7 +182,7 @@
             `Fórmula: f(x) = 1 / (σ√(2π)) · e<sup>−z²/2</sup>`,
             `Reemplazar: f(${fmt(x1)}) = 1 / (${fmt(sigma)} · ${fmt(Math.sqrt(2 * Math.PI))}) · e<sup>−${fmt(z1 * z1 / 2)}</sup> = <b>${fmt(f)}</b>`,
           ],
-          excelEs: `=DISTR.NORM.N(${code(x1)}; ${muC}; ${sC}; FALSO)`,
+          excelEs: `=DISTR.NORM.N(${code(x1)}, ${muC}, ${sC}, FALSO)`,
           excelEn: `=NORM.DIST(${code(x1)}, ${muC}, ${sC}, FALSE)`,
         });
         break;
@@ -198,7 +198,7 @@
             `Buscar z tal que Φ(z) = ${fmt(p)}:  z = Φ⁻¹(${fmt(p)}) = ${fmt(z)}`,
             `Desestandarizar: x = μ + z·σ = ${fmt(mu)} + (${fmt(z)}) · ${fmt(sigma)} = <b>${fmt(x)}</b>`,
           ],
-          excelEs: `=INV.NORM(${code(p)}; ${muC}; ${sC})`,
+          excelEs: `=INV.NORM(${code(p)}, ${muC}, ${sC})`,
           excelEn: `=NORM.INV(${code(p)}, ${muC}, ${sC})`,
         });
         break;
@@ -215,7 +215,7 @@
             `z = Φ⁻¹(${fmt(1 - p)}) = ${fmt(z)}`,
             `Desestandarizar: x = μ + z·σ = ${fmt(mu)} + (${fmt(z)}) · ${fmt(sigma)} = <b>${fmt(x)}</b>`,
           ],
-          excelEs: `=INV.NORM(1 - ${code(p)}; ${muC}; ${sC})`,
+          excelEs: `=INV.NORM(1 - ${code(p)}, ${muC}, ${sC})`,
           excelEn: `=NORM.INV(1 - ${code(p)}, ${muC}, ${sC})`,
         });
         break;
@@ -238,7 +238,7 @@
             `Valor crítico: z = Φ⁻¹(1 − α/2) = Φ⁻¹(${fmt(1 - alpha / 2)}) = ${fmt(z)}`,
             `x₁ = μ − z·σ = ${fmt(mu)} − ${fmt(z)} · ${fmt(sigma)} = <b>${fmt(a)}</b>;  x₂ = μ + z·σ = <b>${fmt(b)}</b>`,
           ],
-          excelEs: `x₁: =INV.NORM(${aC}/2; ${muC}; ${sC})\nx₂: =INV.NORM(1 - ${aC}/2; ${muC}; ${sC})`,
+          excelEs: `x₁: =INV.NORM(${aC}/2, ${muC}, ${sC})\nx₂: =INV.NORM(1 - ${aC}/2, ${muC}, ${sC})`,
           excelEn: `x₁: =NORM.INV(${aC}/2, ${muC}, ${sC})\nx₂: =NORM.INV(1 - ${aC}/2, ${muC}, ${sC})`,
         });
         break;
@@ -257,7 +257,7 @@
             `Fórmula: z = (x − μ) / σ`,
             `Reemplazar: z = (${fmt(x1)} − ${fmt(mu)}) / ${fmt(sigma)} = ${fmt(x1 - mu)} / ${fmt(sigma)} = <b>${fmt(z1)}</b>`,
           ],
-          excelEs: `=NORMALIZACION(${code(x1)}; ${muC}; ${sC})`,
+          excelEs: `=NORMALIZACION(${code(x1)}, ${muC}, ${sC})`,
           excelEn: `=STANDARDIZE(${code(x1)}, ${muC}, ${sC})`,
         });
         break;
