@@ -66,7 +66,8 @@
     const pred = Number.isFinite(x0) ? { x0, y0: b0 + b1 * x0, extrap: x0 < xmin || x0 > xmax } : null;
     return {
       n, sx, sy, sxx, syy, sxy, mx, my, Sxx, Syy, Sxy, b0, b1, r, R2, SSE, SSR, SST, se, rows, xmin, xmax, pred,
-      sdx: Math.sqrt(Sxx / (n - 1)), sdy: Math.sqrt(Syy / (n - 1)), cov: Sxy / (n - 1),
+      vx: sxx / n - mx * mx, vy: syy / n - my * my, cov: sxy / n - mx * my,
+      sdx: Math.sqrt(Math.max(sxx / n - mx * mx, 0)), sdy: Math.sqrt(Math.max(syy / n - my * my, 0)),
     };
   }
 
@@ -124,8 +125,9 @@
     $('rMeasures').innerHTML = [
       ['Cantidad de datos (n)', c.n], ['Σx', fmt(c.sx)], ['Σy', fmt(c.sy)], ['Σx²', fmt(c.sxx)], ['Σy²', fmt(c.syy)], ['Σxy', fmt(c.sxy)],
       ['Media de x (x̄)', fmt(c.mx)], ['Media de y (ȳ)', fmt(c.my)],
-      ['S<sub>xx</sub> = Σ(x − x̄)²', fmt(c.Sxx)], ['S<sub>yy</sub> = Σ(y − ȳ)²', fmt(c.Syy)], ['S<sub>xy</sub> = Σ(x − x̄)(y − ȳ)', fmt(c.Sxy)],
-      ['Desvío estándar de x (s<sub>x</sub>)', fmt(c.sdx)], ['Desvío estándar de y (s<sub>y</sub>)', fmt(c.sdy)], ['Covarianza muestral', fmt(c.cov)],
+      ['Varianza de x: S<sub>x</sub>² = Σx²/n − x̄²', fmt(c.vx)], ['Varianza de y: S<sub>y</sub>² = Σy²/n − ȳ²', fmt(c.vy)],
+      ['Desvío de x: S<sub>x</sub> = √S<sub>x</sub>²', fmt(c.sdx)], ['Desvío de y: S<sub>y</sub> = √S<sub>y</sub>²', fmt(c.sdy)],
+      ['Covarianza: S<sub>xy</sub> = Σxy/n − x̄·ȳ', fmt(c.cov)],
       ['Pendiente (a)', fmt(c.b1)], ['Ordenada al origen (b)', fmt(c.b0)],
       ['Coeficiente de correlación (r)', Number.isFinite(c.r) ? fmt(c.r) : 'indefinido'], ['Coeficiente de determinación (R²)', Number.isFinite(c.R2) ? fmt(c.R2) : 'indefinido'],
       ['Suma de cuadrados total SST', fmt(c.SST)], ['Suma de cuadrados de la regresión SSR', fmt(c.SSR)], ['Suma de cuadrados del error SSE', fmt(c.SSE)],
@@ -144,15 +146,16 @@
       `Armamos la tabla de mínimos cuadrados (con n = ${n} datos) y sumamos cada columna:${table}`,
       `Sumas: Σx = ${fmt(c.sx)}, Σy = ${fmt(c.sy)}, Σxy = ${fmt(c.sxy)}, Σx² = ${fmt(c.sxx)}, Σy² = ${fmt(c.syy)}`,
       `Medias: x̄ = Σx/n = ${fmt(c.sx)}/${n} = ${fmt(c.mx)};  ȳ = Σy/n = ${fmt(c.sy)}/${n} = ${fmt(c.my)}`,
-      `S<sub>xx</sub> = Σx² − (Σx)²/n = ${fmt(c.sxx)} − ${fmt(c.sx)}²/${n} = ${fmt(c.sxx)} − ${fmt(c.sx * c.sx / n)} = <b>${fmt(c.Sxx)}</b>`,
-      `S<sub>yy</sub> = Σy² − (Σy)²/n = ${fmt(c.syy)} − ${fmt(c.sy)}²/${n} = ${fmt(c.syy)} − ${fmt(c.sy * c.sy / n)} = <b>${fmt(c.Syy)}</b>`,
-      `S<sub>xy</sub> = Σxy − (Σx)(Σy)/n = ${fmt(c.sxy)} − ${fmt(c.sx)} · ${fmt(c.sy)}/${n} = ${fmt(c.sxy)} − ${fmt(c.sx * c.sy / n)} = <b>${fmt(c.Sxy)}</b>`,
-      `Pendiente: a = S<sub>xy</sub> / S<sub>xx</sub> = ${fmt(c.Sxy)} / ${fmt(c.Sxx)} = <b>${fmt(c.b1)}</b>`,
+      `Varianza de x: S<sub>x</sub>² = Σx²/n − x̄² = ${fmt(c.sxx)}/${n} − ${fmt(c.mx)}² = ${fmt(c.sxx / n)} − ${fmt(c.mx * c.mx)} = <b>${fmt(c.vx)}</b>`,
+      `Varianza de y: S<sub>y</sub>² = Σy²/n − ȳ² = ${fmt(c.syy)}/${n} − ${fmt(c.my)}² = ${fmt(c.syy / n)} − ${fmt(c.my * c.my)} = <b>${fmt(c.vy)}</b>`,
+      `Desvíos: S<sub>x</sub> = √${fmt(c.vx)} = <b>${fmt(c.sdx)}</b>;  S<sub>y</sub> = √${fmt(c.vy)} = <b>${fmt(c.sdy)}</b>`,
+      `Covarianza: S<sub>xy</sub> = Σxy/n − x̄·ȳ = ${fmt(c.sxy)}/${n} − ${fmt(c.mx)} · ${fmt(c.my)} = ${fmt(c.sxy / n)} − ${fmt(c.mx * c.my)} = <b>${fmt(c.cov)}</b>`,
+      `Pendiente: a = S<sub>xy</sub> / S<sub>x</sub>² = ${fmt(c.cov)} / ${fmt(c.vx)} = <b>${fmt(c.b1)}</b>`,
       `Ordenada al origen: b = ȳ − a·x̄ = ${fmt(c.my)} − ${fmt(c.b1)} · ${fmt(c.mx)} = <b>${fmt(c.b0)}</b>`,
       `Recta de regresión (y = ax + b): <b>${equation(c.b0, c.b1)}</b>`,
     ];
     if (Number.isFinite(c.r)) {
-      s.push(`Correlación: r = S<sub>xy</sub> / √(S<sub>xx</sub> · S<sub>yy</sub>) = ${fmt(c.Sxy)} / √(${fmt(c.Sxx)} · ${fmt(c.Syy)}) = ${fmt(c.Sxy)} / ${fmt(Math.sqrt(c.Sxx * c.Syy))} = <b>${fmt(c.r)}</b>`);
+      s.push(`Correlación: r = S<sub>xy</sub> / (S<sub>x</sub> · S<sub>y</sub>) = ${fmt(c.cov)} / (${fmt(c.sdx)} · ${fmt(c.sdy)}) = ${fmt(c.cov)} / ${fmt(c.sdx * c.sdy)} = <b>${fmt(c.r)}</b>`);
       s.push(`Determinación: R² = r² = ${fmt(c.r)}² = <b>${fmt(c.R2)}</b>`);
     }
     if (c.pred) s.push(`Predicción: y = a·x + b = ${substLine(c, c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>`);

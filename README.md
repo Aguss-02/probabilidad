@@ -61,7 +61,7 @@ Elegí "Intervalo de confianza" en el selector de arriba (o entrá con `#interva
 ## Regresión lineal (`#regresion`)
 
 - Datos pegados desde Excel (tabulación, punto y coma, espacio o coma; acepta coma decimal y encabezado).
-- Recta de mínimos cuadrados en la forma y = ax + b (a = pendiente, b = ordenada), con la tabla x, y, xy, x², y², las sumas Sxx, Syy, Sxy y a = Sxy/Sxx, b = ȳ − a·x̄; r, R², interpretación, predicción con aviso de extrapolación.
+- Recta de mínimos cuadrados en la forma y = ax + b (a = pendiente, b = ordenada), con la tabla x, y, xy, x², y², varianzas Sx², Sy² y covarianza Sxy (divididas por n), a = Sxy/Sx², b = ȳ − a·x̄ y r = Sxy/(Sx·Sy); R², interpretación, predicción con aviso de extrapolación.
 - Gráfico de dispersión con recta y residuos, sumas, paso a paso y Excel.
 
 ## Fórmulas
