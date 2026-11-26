@@ -140,20 +140,19 @@
     const table = '<div class="zt-wrap ls-wrap"><table class="calc-table dist-table ls-table">' +
       '<thead><tr><th>#</th><th>x</th><th>y</th><th>x · y</th><th>x²</th><th>y²</th></tr></thead><tbody>' + rowsHtml +
       `<tr class="current"><td>Σ</td><td>${fmt(c.sx)}</td><td>${fmt(c.sy)}</td><td>${fmt(c.sxy)}</td><td>${fmt(c.sxx)}</td><td>${fmt(c.syy)}</td></tr></tbody></table></div>`;
-    const num = n * c.sxy - c.sx * c.sy;          // nΣxy − ΣxΣy
-    const denX = n * c.sxx - c.sx * c.sx;         // nΣx² − (Σx)²
-    const denY = n * c.syy - c.sy * c.sy;         // nΣy² − (Σy)²
     const s = [
       `Armamos la tabla de mínimos cuadrados (con n = ${n} datos) y sumamos cada columna:${table}`,
       `Sumas: Σx = ${fmt(c.sx)}, Σy = ${fmt(c.sy)}, Σxy = ${fmt(c.sxy)}, Σx² = ${fmt(c.sxx)}, Σy² = ${fmt(c.syy)}`,
-      `Pendiente: a = (nΣxy − ΣxΣy) / (nΣx² − (Σx)²) = (${n} · ${fmt(c.sxy)} − ${fmt(c.sx)} · ${fmt(c.sy)}) / (${n} · ${fmt(c.sxx)} − ${fmt(c.sx)}²) = ` +
-        `(${fmt(n * c.sxy)} − ${fmt(c.sx * c.sy)}) / (${fmt(n * c.sxx)} − ${fmt(c.sx * c.sx)}) = ${fmt(num)} / ${fmt(denX)} = <b>${fmt(c.b1)}</b>`,
-      `Ordenada al origen: b = (Σy − a·Σx) / n = (${fmt(c.sy)} − ${fmt(c.b1)} · ${fmt(c.sx)}) / ${n} = (${fmt(c.sy)} − ${fmt(c.b1 * c.sx)}) / ${n} = <b>${fmt(c.b0)}</b>` +
-        `  <span class="muted">(es lo mismo que b = ȳ − a·x̄ = ${fmt(c.my)} − ${fmt(c.b1)} · ${fmt(c.mx)})</span>`,
+      `Medias: x̄ = Σx/n = ${fmt(c.sx)}/${n} = ${fmt(c.mx)};  ȳ = Σy/n = ${fmt(c.sy)}/${n} = ${fmt(c.my)}`,
+      `S<sub>xx</sub> = Σx² − (Σx)²/n = ${fmt(c.sxx)} − ${fmt(c.sx)}²/${n} = ${fmt(c.sxx)} − ${fmt(c.sx * c.sx / n)} = <b>${fmt(c.Sxx)}</b>`,
+      `S<sub>yy</sub> = Σy² − (Σy)²/n = ${fmt(c.syy)} − ${fmt(c.sy)}²/${n} = ${fmt(c.syy)} − ${fmt(c.sy * c.sy / n)} = <b>${fmt(c.Syy)}</b>`,
+      `S<sub>xy</sub> = Σxy − (Σx)(Σy)/n = ${fmt(c.sxy)} − ${fmt(c.sx)} · ${fmt(c.sy)}/${n} = ${fmt(c.sxy)} − ${fmt(c.sx * c.sy / n)} = <b>${fmt(c.Sxy)}</b>`,
+      `Pendiente: a = S<sub>xy</sub> / S<sub>xx</sub> = ${fmt(c.Sxy)} / ${fmt(c.Sxx)} = <b>${fmt(c.b1)}</b>`,
+      `Ordenada al origen: b = ȳ − a·x̄ = ${fmt(c.my)} − ${fmt(c.b1)} · ${fmt(c.mx)} = <b>${fmt(c.b0)}</b>`,
       `Recta de regresión (y = ax + b): <b>${equation(c.b0, c.b1)}</b>`,
     ];
     if (Number.isFinite(c.r)) {
-      s.push(`Correlación: r = (nΣxy − ΣxΣy) / √[(nΣx² − (Σx)²) · (nΣy² − (Σy)²)] = ${fmt(num)} / √(${fmt(denX)} · ${fmt(denY)}) = ${fmt(num)} / ${fmt(Math.sqrt(denX * denY))} = <b>${fmt(c.r)}</b>`);
+      s.push(`Correlación: r = S<sub>xy</sub> / √(S<sub>xx</sub> · S<sub>yy</sub>) = ${fmt(c.Sxy)} / √(${fmt(c.Sxx)} · ${fmt(c.Syy)}) = ${fmt(c.Sxy)} / ${fmt(Math.sqrt(c.Sxx * c.Syy))} = <b>${fmt(c.r)}</b>`);
       s.push(`Determinación: R² = r² = ${fmt(c.r)}² = <b>${fmt(c.R2)}</b>`);
     }
     if (c.pred) s.push(`Predicción: y = a·x + b = ${substLine(c, c.pred.x0)} = <b>${fmt(c.pred.y0)}</b>`);
