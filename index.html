@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=38">
+  <link rel="stylesheet" href="css/styles.css?v=39">
 </head>
 <body>
   <header class="site-header">
@@ -195,12 +195,8 @@
           <summary><span class="fold-icon">Z</span> Tabla para estandarizar (normal estándar Z)</summary>
           <div class="fold-body">
             <p class="muted small">Primero estandarizá con z = (x − μ) / σ. Después buscá la <b>fila</b> con el entero y el primer decimal de z, y la <b>columna</b> con el segundo decimal. La celda marcada corresponde a tu cálculo.</p>
+            <p class="muted small">La tabla tiene solo valores <b>positivos</b> de z. Para un z negativo se usa la simetría de la normal: <b>Φ(−z) = 1 − Φ(z)</b>, y P(Z &gt; −z) = Φ(z).</p>
             <div class="zt-controls">
-              <div class="seg" role="group" aria-label="Parte de la tabla">
-                <button class="seg-btn" data-zview="neg">z negativos</button>
-                <button class="seg-btn" data-zview="pos">z positivos</button>
-                <button class="seg-btn" data-zview="all">Completa</button>
-              </div>
               <label class="field inline">
                 <span>Valores</span>
                 <select id="ztType">
@@ -928,13 +924,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=38"></script>
-  <script src="js/normal.js?v=38"></script>
-  <script src="js/app.js?v=38"></script>
-  <script src="js/ci.js?v=38"></script>
-  <script src="js/discrete.js?v=38"></script>
-  <script src="js/uniform.js?v=38"></script>
-  <script src="js/regression.js?v=38"></script>
-  <script src="js/switcher.js?v=38"></script>
+  <script src="js/common.js?v=39"></script>
+  <script src="js/normal.js?v=39"></script>
+  <script src="js/app.js?v=39"></script>
+  <script src="js/ci.js?v=39"></script>
+  <script src="js/discrete.js?v=39"></script>
+  <script src="js/uniform.js?v=39"></script>
+  <script src="js/regression.js?v=39"></script>
+  <script src="js/switcher.js?v=39"></script>
 </body>
 </html>
