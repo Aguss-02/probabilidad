@@ -362,3 +362,9 @@ math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
 .vc-item math { font-size: 1.15em; math-style: normal; }
 .vc-item { overflow-x: auto; }
 @media (max-width: 640px) { .vc-grid { grid-template-columns: 1fr; } .vc-item math { font-size: 1em; } }
+/* letras con raya (x̄, ȳ): carácter combinante en cursiva, se ve igual con cualquier fuente */
+math mi.bar { font-style: italic; }
+/* solo desplazamiento horizontal si hace falta, nunca barras verticales */
+.vc-item, .formula .math, .fc-formula, .fc-moments, .std-steps .step-math { overflow-y: hidden; }
+.vc-item { padding: 2px 0; }
+math msup > mi.bar:first-child { padding-right: .12em; }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=46">
+  <link rel="stylesheet" href="css/styles.css?v=48">
 </head>
 <body>
   <header class="site-header">
@@ -273,7 +273,7 @@
         </div>
         <div class="formula">
           <div class="formula-name">Error estándar de la media</div>
-          <div class="math"><math display="block"><mrow><msub><mi>σ</mi><mover accent="true"><mi>x</mi><mo>¯</mo></mover></msub><mo>=</mo><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math><div class="muted small">desvío de la media muestral x̄ en muestras de tamaño n</div></div>
+          <div class="math"><math display="block"><mrow><msub><mi>σ</mi><mi class="bar">x̄</mi></msub><mo>=</mo><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math><div class="muted small">desvío de la media muestral x̄ en muestras de tamaño n</div></div>
         </div>
       </div>
 
@@ -447,7 +447,7 @@
       <div class="formulas">
         <div class="formula">
           <div class="formula-name">Intervalo de confianza</div>
-          <div class="math"><math display="block"><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>±</mo><msub><mi>z</mi><mrow><mi>α</mi><mo lspace="0" rspace="0">/</mo><mn>2</mn></mrow></msub><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div>
+          <div class="math"><math display="block"><mrow><mi class="bar">x̄</mi><mo>±</mo><msub><mi>z</mi><mrow><mi>α</mi><mo lspace="0" rspace="0">/</mo><mn>2</mn></mrow></msub><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div>
         </div>
         <div class="formula">
           <div class="formula-name">Margen de error</div>
@@ -463,13 +463,13 @@
         </div>
         <div class="formula">
           <div class="formula-name">Error estándar de la media</div>
-          <div class="math"><math display="block"><mrow><msub><mi>σ</mi><mover accent="true"><mi>x</mi><mo>¯</mo></mover></msub><mo>=</mo><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math><div class="muted small">desvío de la media muestral x̄</div></div>
+          <div class="math"><math display="block"><mrow><msub><mi>σ</mi><mi class="bar">x̄</mi></msub><mo>=</mo><mfrac><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math><div class="muted small">desvío de la media muestral x̄</div></div>
         </div>
       </div>
 
       <h3>Resolución tipificando (paso a paso)</h3>
       <p>Es la misma fórmula, pero obtenida desde la normal estándar, como se hace en clase:</p>
-      <ol class="std-steps"><li><div>En la normal estándar N(0 ; 1) se busca el intervalo central con la confianza pedida. Al 95 %:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mo>≤</mo><mi>Z</mi><mo>≤</mo><mn>1.96</mn></mrow></math> <span class="muted">→  IC(−1.96 ; 1.96)</span></div></li><li><div>La media muestral se distribuye normal, con desvío σ/√n:</div><div class="step-math"><math><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>∼</mo><mi>N</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>μ</mi><mo>;</mo><mfrac displaystyle="true"><msup><mi>σ</mi><mn>2</mn></msup><mi>n</mi></mfrac><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></math></div></li><li><div>Se tipifica la media muestral:</div><div class="step-math"><math><mrow><mi>Z</mi><mo>=</mo><mfrac displaystyle="true"><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mi>μ</mi></mrow><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac></mrow></math></div></li><li><div>Se reemplaza Z en el intervalo:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mo>≤</mo><mfrac displaystyle="true"><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mi>μ</mi></mrow><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac><mo>≤</mo><mn>1.96</mn></mrow></math></div></li><li><div>Se multiplica todo por σ/√n:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac><mo>≤</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mi>μ</mi><mo>≤</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div></li><li><div>Se despeja μ, y queda el intervalo de confianza:</div><div class="step-math"><math><mrow><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>−</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac><mo>≤</mo><mi>μ</mi><mo>≤</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo>+</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div></li></ol>
+      <ol class="std-steps"><li><div>En la normal estándar N(0 ; 1) se busca el intervalo central con la confianza pedida. Al 95 %:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mo>≤</mo><mi>Z</mi><mo>≤</mo><mn>1.96</mn></mrow></math> <span class="muted">→  IC(−1.96 ; 1.96)</span></div></li><li><div>La media muestral se distribuye normal, con desvío σ/√n:</div><div class="step-math"><math><mrow><mi class="bar">x̄</mi><mo>∼</mo><mi>N</mi><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>μ</mi><mo>;</mo><mfrac displaystyle="true"><msup><mi>σ</mi><mn>2</mn></msup><mi>n</mi></mfrac><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></math></div></li><li><div>Se tipifica la media muestral:</div><div class="step-math"><math><mrow><mi>Z</mi><mo>=</mo><mfrac displaystyle="true"><mrow><mi class="bar">x̄</mi><mo>−</mo><mi>μ</mi></mrow><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac></mrow></math></div></li><li><div>Se reemplaza Z en el intervalo:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mo>≤</mo><mfrac displaystyle="true"><mrow><mi class="bar">x̄</mi><mo>−</mo><mi>μ</mi></mrow><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mfrac><mo>≤</mo><mn>1.96</mn></mrow></math></div></li><li><div>Se multiplica todo por σ/√n:</div><div class="step-math"><math><mrow><mo>−</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac><mo>≤</mo><mi class="bar">x̄</mi><mo>−</mo><mi>μ</mi><mo>≤</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div></li><li><div>Se despeja μ, y queda el intervalo de confianza:</div><div class="step-math"><math><mrow><mi class="bar">x̄</mi><mo>−</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac><mo>≤</mo><mi>μ</mi><mo>≤</mo><mi class="bar">x̄</mi><mo>+</mo><mn>1.96</mn><mfrac displaystyle="true"><mi>σ</mi><msqrt><mi>n</mi></msqrt></mfrac></mrow></math></div></li></ol>
       <div class="worked">
         <div class="worked-title">Ejemplo resuelto</div>
         <p><i>Se toma una muestra de n = 8 con media x̄ = 22.5. La varianza poblacional es σ² = 4. Construir el intervalo de confianza del 95 % para μ.</i></p>
@@ -879,7 +879,7 @@
         </div>
         <div class="formula">
           <div class="formula-name">Ordenada al origen (<span class="var">b</span>)</div>
-          <div class="math"><math display="block"><mrow><mi>b</mi><mo>=</mo><mover accent="true"><mi>y</mi><mo>¯</mo></mover><mo>−</mo><mi>a</mi><mover accent="true"><mi>x</mi><mo>¯</mo></mover></mrow></math></div>
+          <div class="math"><math display="block"><mrow><mi>b</mi><mo>=</mo><mi class="bar">ȳ</mi><mo>−</mo><mi>a</mi><mi class="bar">x̄</mi></mrow></math></div>
         </div>
         <div class="formula">
           <div class="formula-name">Coeficiente de correlación</div>
@@ -887,7 +887,7 @@
         </div>
         <div class="formula wide">
           <div class="formula-name">Varianzas, desvíos y covarianza</div>
-          <div class="vc-grid"><div class="vc-item"><div class="vc-name">Varianza de x</div><math><mrow><msubsup><mi>S</mi><mi>x</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mo>∑</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow><mi>n</mi></mfrac><mo>=</mo><mfrac><mrow><mo>∑</mo><msup><msub><mi>x</mi><mi>i</mi></msub><mn>2</mn></msup></mrow><mi>n</mi></mfrac><mo>−</mo><msup><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mn>2</mn></msup></mrow></math></div><div class="vc-item"><div class="vc-name">Varianza de y</div><math><mrow><msubsup><mi>S</mi><mi>y</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mo>∑</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mover accent="true"><mi>y</mi><mo>¯</mo></mover><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow><mi>n</mi></mfrac><mo>=</mo><mfrac><mrow><mo>∑</mo><msup><msub><mi>y</mi><mi>i</mi></msub><mn>2</mn></msup></mrow><mi>n</mi></mfrac><mo>−</mo><msup><mover accent="true"><mi>y</mi><mo>¯</mo></mover><mn>2</mn></msup></mrow></math></div><div class="vc-item"><div class="vc-name">Desvíos estándar</div><math><mrow><msub><mi>S</mi><mi>x</mi></msub><mo>=</mo><msqrt><msubsup><mi>S</mi><mi>x</mi><mn>2</mn></msubsup></msqrt><mo>,</mo><mspace width="1.2em"/><msub><mi>S</mi><mi>y</mi></msub><mo>=</mo><msqrt><msubsup><mi>S</mi><mi>y</mi><mn>2</mn></msubsup></msqrt></mrow></math></div><div class="vc-item"><div class="vc-name">Covarianza</div><math><mrow><msub><mi>S</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><msub><mi>x</mi><mi>i</mi></msub><msub><mi>y</mi><mi>i</mi></msub></mrow><mi>n</mi></mfrac><mo>−</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mover accent="true"><mi>y</mi><mo>¯</mo></mover></mrow></math></div></div>
+          <div class="vc-grid"><div class="vc-item"><div class="vc-name">Varianza de x</div><math><mrow><msubsup><mi>S</mi><mi>x</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mo>∑</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mi class="bar">x̄</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow><mi>n</mi></mfrac><mo>=</mo><mfrac><mrow><mo>∑</mo><msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup></mrow><mi>n</mi></mfrac><mo>−</mo><msup><mi class="bar">x̄</mi><mn>2</mn></msup></mrow></math></div><div class="vc-item"><div class="vc-name">Varianza de y</div><math><mrow><msubsup><mi>S</mi><mi>y</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mo>∑</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><mi class="bar">ȳ</mi><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow><mi>n</mi></mfrac><mo>=</mo><mfrac><mrow><mo>∑</mo><msubsup><mi>y</mi><mi>i</mi><mn>2</mn></msubsup></mrow><mi>n</mi></mfrac><mo>−</mo><msup><mi class="bar">ȳ</mi><mn>2</mn></msup></mrow></math></div><div class="vc-item"><div class="vc-name">Desvíos estándar</div><math><mrow><msub><mi>S</mi><mi>x</mi></msub><mo>=</mo><msqrt><msubsup><mi>S</mi><mi>x</mi><mn>2</mn></msubsup></msqrt><mo>,</mo><mspace width="1.2em"/><msub><mi>S</mi><mi>y</mi></msub><mo>=</mo><msqrt><msubsup><mi>S</mi><mi>y</mi><mn>2</mn></msubsup></msqrt></mrow></math></div><div class="vc-item"><div class="vc-name">Covarianza</div><math><mrow><msub><mi>S</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>∑</mo><msub><mi>x</mi><mi>i</mi></msub><msub><mi>y</mi><mi>i</mi></msub></mrow><mi>n</mi></mfrac><mo>−</mo><mi class="bar">x̄</mi><mi class="bar">ȳ</mi></mrow></math></div></div>
           <div class="muted small">La segunda forma de la varianza (Σxᵢ²/n − x̄²) es equivalente y simplifica bastante los cálculos.</div>
         </div>
         <div class="formula">
@@ -925,13 +925,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=46"></script>
-  <script src="js/normal.js?v=46"></script>
-  <script src="js/app.js?v=46"></script>
-  <script src="js/ci.js?v=46"></script>
-  <script src="js/discrete.js?v=46"></script>
-  <script src="js/uniform.js?v=46"></script>
-  <script src="js/regression.js?v=46"></script>
-  <script src="js/switcher.js?v=46"></script>
+  <script src="js/common.js?v=48"></script>
+  <script src="js/normal.js?v=48"></script>
+  <script src="js/app.js?v=48"></script>
+  <script src="js/ci.js?v=48"></script>
+  <script src="js/discrete.js?v=48"></script>
+  <script src="js/uniform.js?v=48"></script>
+  <script src="js/regression.js?v=48"></script>
+  <script src="js/switcher.js?v=48"></script>
 </body>
 </html>
