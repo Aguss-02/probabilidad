@@ -351,3 +351,9 @@ math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", serif;
 .worked-title { font-weight: 800; color: #4c1d95; margin-bottom: 4px; }
 .worked ol { margin: 6px 0; padding-left: 22px; }
 .worked li { margin-bottom: 4px; }
+.ls-wrap { margin: 8px 0 4px; max-height: 320px; }
+.ls-table td, .ls-table th { padding: 4px 8px; }
+.math-text { font-size: .92rem; color: var(--text); }
+@media (max-width: 640px) { .formula.wide .math math[display="block"] { font-size: .88em; } }
+.ls-wrap { max-height: 380px; }
+.ls-table tr.current td { position: sticky; bottom: 0; background: #ede9fe; border-top: 2px solid #c4b5fd; }

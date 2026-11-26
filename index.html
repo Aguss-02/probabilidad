@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calculadora de Probabilidad y Estadística</title>
-  <link rel="stylesheet" href="css/styles.css?v=40">
+  <link rel="stylesheet" href="css/styles.css?v=43">
 </head>
 <body>
   <header class="site-header">
@@ -875,23 +875,19 @@
         </div>
         <div class="formula">
           <div class="formula-name">Pendiente (<span class="var">a</span>)</div>
-          <div class="math"><math display="block"><mrow><mi>a</mi><mo>=</mo><mfrac><msub><mi>S</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><msub><mi>S</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub></mfrac></mrow></math></div>
+          <div class="math"><math display="block"><mrow><mi>a</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mrow><mo>∑</mo><mi>x</mi><mi>y</mi></mrow><mo>−</mo><mrow><mo>∑</mo><mi>x</mi></mrow><mrow><mo>∑</mo><mi>y</mi></mrow></mrow><mrow><mi>n</mi><mrow><mo>∑</mo><msup><mi>x</mi><mn>2</mn></msup></mrow><mo>−</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mrow><mo>∑</mo><mi>x</mi></mrow><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow></mfrac></mrow></math></div>
         </div>
         <div class="formula">
           <div class="formula-name">Ordenada al origen (<span class="var">b</span>)</div>
-          <div class="math"><math display="block"><mrow><mi>b</mi><mo>=</mo><mover accent="true"><mi>y</mi><mo>¯</mo></mover><mo>−</mo><mi>a</mi><mover accent="true"><mi>x</mi><mo>¯</mo></mover></mrow></math></div>
+          <div class="math"><math display="block"><mrow><mi>b</mi><mo>=</mo><mfrac><mrow><mrow><mo>∑</mo><mi>y</mi></mrow><mo>−</mo><mi>a</mi><mrow><mo>∑</mo><mi>x</mi></mrow></mrow><mi>n</mi></mfrac></mrow></math><div class="muted small">equivalente a b = ȳ − a·x̄</div></div>
         </div>
-        <div class="formula">
+        <div class="formula wide">
           <div class="formula-name">Coeficiente de correlación</div>
-          <div class="math"><math display="block"><mrow><mi>r</mi><mo>=</mo><mfrac><msub><mi>S</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><msqrt><mrow><msub><mi>S</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><msub><mi>S</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub></mrow></msqrt></mfrac></mrow></math></div>
+          <div class="math"><math display="block"><mrow><mi>r</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mrow><mo>∑</mo><mi>x</mi><mi>y</mi></mrow><mo>−</mo><mrow><mo>∑</mo><mi>x</mi></mrow><mrow><mo>∑</mo><mi>y</mi></mrow></mrow><msqrt><mrow><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mrow><mi>n</mi><mrow><mo>∑</mo><msup><mi>x</mi><mn>2</mn></msup></mrow><mo>−</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mrow><mo>∑</mo><mi>x</mi></mrow><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mrow><mi>n</mi><mrow><mo>∑</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><mo>−</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mrow><mo>∑</mo><mi>y</mi></mrow><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></mrow></msqrt></mfrac></mrow></math></div>
         </div>
         <div class="formula">
-          <div class="formula-name">Sumas</div>
-          <div class="math math-lines">
-            <div><math><mrow><msub><mi>S</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mo>∑</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo>−</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow></math></div>
-            <div><math><mrow><msub><mi>S</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>=</mo><mo>∑</mo><msup><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>y</mi><mo>−</mo><mover accent="true"><mi>y</mi><mo>¯</mo></mover><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mn>2</mn></msup></mrow></math></div>
-            <div><math><mrow><msub><mi>S</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>=</mo><mo>∑</mo><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo>−</mo><mover accent="true"><mi>x</mi><mo>¯</mo></mover><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow><mrow><mo stretchy="false" lspace="0" rspace="0">(</mo><mi>y</mi><mo>−</mo><mover accent="true"><mi>y</mi><mo>¯</mo></mover><mo stretchy="false" lspace="0" rspace="0">)</mo></mrow></mrow></math></div>
-          </div>
+          <div class="formula-name">Tabla de mínimos cuadrados</div>
+          <div class="math-text">Se arma una tabla con las columnas <b>x</b>, <b>y</b>, <b>x·y</b>, <b>x²</b> (e <b>y²</b> para r) y se suma cada columna. Con esas sumas y n se calculan a, b y r.</div>
         </div>
       </div>
       <h3>¿Cómo se interpretan?</h3>
@@ -924,13 +920,13 @@
 
   <footer class="wrap footer">Calculadora de Probabilidad y Estadística · Distribuciones</footer>
 
-  <script src="js/common.js?v=40"></script>
-  <script src="js/normal.js?v=40"></script>
-  <script src="js/app.js?v=40"></script>
-  <script src="js/ci.js?v=40"></script>
-  <script src="js/discrete.js?v=40"></script>
-  <script src="js/uniform.js?v=40"></script>
-  <script src="js/regression.js?v=40"></script>
-  <script src="js/switcher.js?v=40"></script>
+  <script src="js/common.js?v=43"></script>
+  <script src="js/normal.js?v=43"></script>
+  <script src="js/app.js?v=43"></script>
+  <script src="js/ci.js?v=43"></script>
+  <script src="js/discrete.js?v=43"></script>
+  <script src="js/uniform.js?v=43"></script>
+  <script src="js/regression.js?v=43"></script>
+  <script src="js/switcher.js?v=43"></script>
 </body>
 </html>
