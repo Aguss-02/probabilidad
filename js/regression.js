@@ -158,20 +158,20 @@
     const x0 = c.pred ? String(c.pred.x0) : 'x';
     $('rExcelNote').textContent = `Suponiendo que los valores de X están en ${X} y los de Y en ${Y} (con encabezados en la fila 1).`;
     $('rExcelEs').textContent = [
-      `Pendiente (a):      =PENDIENTE(${Y}, ${X})`,
-      `Ordenada (b):       =INTERSECCION.EJE(${Y}, ${X})`,
-      `Correlación (r):    =COEF.DE.CORREL(${X}, ${Y})`,
-      `R²:                 =COEFICIENTE.R2(${Y}, ${X})`,
-      `Predicción:         =PRONOSTICO.LINEAL(${x0}, ${Y}, ${X})`,
-      `Error estándar:     =ERROR.TIPICO.XY(${Y}, ${X})`,
+      `Pendiente (a), =PENDIENTE(${Y}, ${X})`,
+      `Ordenada (b), =INTERSECCION.EJE(${Y}, ${X})`,
+      `Correlación (r), =COEF.DE.CORREL(${X}, ${Y})`,
+      `R², =COEFICIENTE.R2(${Y}, ${X})`,
+      `Predicción, =PRONOSTICO(${x0}, ${Y}, ${X})`,
+      `Error estándar, =ERROR.TIPICO.XY(${Y}, ${X})`,
     ].join('\n');
     $('rExcelEn').textContent = [
-      `Slope (a):          =SLOPE(${Y}, ${X})`,
-      `Intercept (b):      =INTERCEPT(${Y}, ${X})`,
-      `Correlation (r):    =CORREL(${X}, ${Y})`,
-      `R²:                 =RSQ(${Y}, ${X})`,
-      `Prediction:         =FORECAST.LINEAR(${x0}, ${Y}, ${X})`,
-      `Standard error:     =STEYX(${Y}, ${X})`,
+      `Slope (a), =SLOPE(${Y}, ${X})`,
+      `Intercept (b), =INTERCEPT(${Y}, ${X})`,
+      `Correlation (r), =CORREL(${X}, ${Y})`,
+      `R², =RSQ(${Y}, ${X})`,
+      `Prediction, =FORECAST.LINEAR(${x0}, ${Y}, ${X})`,
+      `Standard error, =STEYX(${Y}, ${X})`,
     ].join('\n');
   }
 
